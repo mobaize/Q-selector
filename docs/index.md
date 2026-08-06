@@ -1,7 +1,7 @@
 # Welcome to Q-Selector's documentation!
 
 **Q-Selector** is a machine learning tool that predicts the optimal quantum backend for a given quantum circuit.
-Given an unknown QASM file (or an entire folder of circuits), it loads a pre-trained Random Forest model and recommends the best-suited quantum processor — no ground-truth comparison or manual benchmarking needed.
+Given an unknown QASM file (or an entire folder of circuits), it loads a locally trained Random Forest model and recommends the best-suited quantum processor — no ground-truth comparison or manual benchmarking needed. The repository provides the training data and scripts; users generate the PKL model locally with `python src/train.py`.
 
 ```{toctree}
 :caption: User Guide

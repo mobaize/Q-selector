@@ -1,0 +1,17 @@
+# Python bytecode and virtual environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Test, coverage, and build outputs
+.pytest_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+docs/_build/
+
+# Locally generated Q-Selector model
+results/trained_model_optimized.pkl

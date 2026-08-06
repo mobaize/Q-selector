@@ -5,7 +5,7 @@ If you use Q-Selector in your research, please cite the following:
 ```bibtex
 @misc{qselector,
   title = {{Q-Selector}: {Machine} Learning Based Quantum Backend Selection for Unknown Quantum Circuits},
-  howpublished = {\url{https://github.com/your-org/q-selector}},
+  howpublished = {\url{https://github.com/mobaize/Q-selector}},
   year = {2026},
 }
 ```

@@ -60,6 +60,11 @@ docs = [
 [project.scripts]
 q-selector = "src.recommend:main"
 
+[project.urls]
+Homepage = "https://github.com/mobaize/Q-selector"
+Repository = "https://github.com/mobaize/Q-selector"
+Issues = "https://github.com/mobaize/Q-selector/issues"
+
 [tool.hatch.build.targets.wheel]
 packages = ["src/"]
 

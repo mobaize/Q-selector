@@ -5,6 +5,8 @@ Q-Selector requires Python 3.10 or later and can be installed on all major opera
 ## Quick Install
 
 ```console
+$ git clone https://github.com/mobaize/Q-selector.git
+$ cd Q-selector
 $ python -m pip install -e .
 ```
 
@@ -26,11 +28,14 @@ $ python -m pip install -e .
     (.venv) $ python -m pip install -e ".[dev]"
     ```
 
-4.  Optionally rebuild the included pre-trained model:
+4.  Generate the model required by the recommendation and evaluation tools:
 
     ```console
     (.venv) $ python src/train.py
     ```
+
+    The repository does not include `results/trained_model_optimized.pkl`.
+    This command generates it locally from the included dataset.
 
 ## Verify Installation
 

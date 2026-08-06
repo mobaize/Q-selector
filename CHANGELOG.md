@@ -22,4 +22,4 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - 🚚 Validation results moved from `results/` to `results/example_results/` to separate user-facing output from validation artifacts ([#1])
 - 🔧 Output file naming changed from per-circuit names (`{circuit}_best_recommendation.csv`) to fixed names (`best_recommendation.csv`) since the parent folder is already timestamped ([#1])
 
-[#1]: https://github.com/your-org/q-selector/pull/1
+[#1]: https://github.com/mobaize/Q-selector/pull/1

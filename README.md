@@ -1,5 +1,7 @@
 # Q-Selector
 
+Repository: <https://github.com/mobaize/Q-selector>
+
 Q-Selector is a machine-learning tool for selecting a suitable quantum
 processor for an OpenQASM circuit. It extracts circuit, processor, and
 circuit--processor interaction features, predicts a figure of merit (FOM) for
@@ -13,7 +15,7 @@ evaluating a model.
 
 - Recommend a processor for one OpenQASM 2 circuit.
 - Batch-process all `.qasm` files in a directory.
-- Rank 20 simulated processor profiles using a pre-trained random forest.
+- Train a random-forest model locally and rank 20 simulated processor profiles.
 - Extract 23 circuit features, 20 processor features, and 13 interaction
   features.
 - Export the best recommendation and complete ranking as CSV and JSON.
@@ -30,7 +32,12 @@ installations.
 
 ## Installation
 
-From the project root, create a virtual environment and install Q-Selector:
+Clone the repository, then create a virtual environment and install Q-Selector:
+
+```bash
+git clone https://github.com/mobaize/Q-selector.git
+cd Q-selector
+```
 
 ```bash
 python -m venv .venv
@@ -76,15 +83,23 @@ The repository contains:
 - `data/QASM/`: OpenQASM circuits used by the dataset.
 - `data/backend_json/`: configuration and calibration data for 20 simulated
   processors.
-- `results/trained_model_optimized.pkl`: pre-trained model and preprocessing
-  artifacts.
+- `results/example_results/`: example evaluation outputs.
 
-The pre-trained model is loaded with Python `pickle`. Only load model files
-from a trusted source.
+The repository does not distribute `results/trained_model_optimized.pkl`
+because the generated model file is too large for normal GitHub storage. Run
+`python src/train.py` after installation to generate the model and
+preprocessing artifacts locally. Model files use Python `pickle`; only load
+files that you generated yourself or obtained from a trusted source.
 
 ## Quick start
 
-Run a recommendation without writing output files:
+Train the model before the first recommendation:
+
+```bash
+python src/train.py
+```
+
+Then run a recommendation without writing output files:
 
 ```bash
 q-selector data/QASM/ae_indep_qiskit_10.qasm --no-save
@@ -120,8 +135,9 @@ Run `q-selector --help` for the complete command-line reference.
 
 ## Training and evaluation
 
-Training is optional when the included pre-trained model is available. To
-rebuild it from the labeled dataset:
+The generated PKL model is not included in the repository. Before using
+`recommend.py`, `predict.py`, or `evaluate.py`, train it from the included
+labeled dataset:
 
 ```bash
 python src/train.py
@@ -177,9 +193,9 @@ Q-Selector/
 |   `-- backend_json/
 |-- docs/
 |-- results/
-|   |-- trained_model_optimized.pkl
 |   |-- example_results/
-|   `-- your_work/
+|   |-- your_work/
+|   `-- trained_model_optimized.pkl  # generated locally by train.py
 |-- src/
 |   |-- data_generator.py
 |   |-- evaluate.py

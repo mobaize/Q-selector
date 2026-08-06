@@ -1,14 +1,23 @@
 # Quickstart
 
-This guide walks you through recommending a processor for an unknown quantum circuit and optionally rebuilding the model.
+This guide walks you through training Q-Selector and recommending a processor for an unknown quantum circuit.
 
 ## Prerequisites
 
 Ensure the package is installed and dependencies are available (see {doc}`installation`).
 
-## Step 1: Recommend a Backend
+## Step 1: Train the Model
 
-The repository includes a pre-trained model, so recommendation can run directly.
+The generated PKL model is not stored in the repository. Create it locally
+before the first recommendation:
+
+```console
+$ python src/train.py
+```
+
+This writes the trained model and preprocessing artifacts to `results/`.
+
+## Step 2: Recommend a Backend
 
 ### Single Circuit
 
@@ -42,18 +51,8 @@ Each run creates a timestamped archive under `results/your_work/<timestamp>/`:
 | `full_ranking.csv` | Long table: every backend per circuit with rank, FOM, error rates |
 | `full_ranking.json` | Per-circuit grouped JSON with full rankings and circuit features |
 
-## Step 2: Interpret the Results
+## Step 3: Interpret the Results
 
 The model assigns a **predicted FOM** (Figure of Merit, scaled Hellinger fidelity × 10) to each circuit–backend pair. Higher values indicate better expected performance. The recommended backend is the one with the highest predicted FOM.
 
 For a quick sanity check, compare the recommended backend's characteristics (qubit count, gate errors, connectivity) against the circuit's requirements (qubit width, two-qubit gate density, entanglement ratio).
-
-## Step 3: Optionally Rebuild the Model
-
-To train a new model from the included labeled dataset:
-
-```console
-$ python src/train.py
-```
-
-This writes the trained model and preprocessing artifacts to `results/`.
