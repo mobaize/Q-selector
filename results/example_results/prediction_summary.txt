@@ -1,0 +1,399 @@
+======================================================================
+Prediction Summary Report (Optimized)
+======================================================================
+
+  Total test circuits: 174
+  Best backend selection accuracy: 0.7011 (70.11%)
+  Correct predictions: 122
+  Top-3 accuracy: 0.8276 (82.76%)
+  Top-3 correct: 144
+
+CIRCUIT PREDICTIONS:
+------------------------------------------------------------------------------------------
+Circuit                                            True Best              Pred Best              Correct
+------------------------------------------------------------------------------------------
+qft_indep_qiskit_17                                FakeSherbrooke         FakeCairoV2            No
+grover-noancilla_mapped_ibm_montreal_qiskit_opt0_5 FakeCairoV2            FakeCairoV2            Yes
+qpeinexact_indep_qiskit_3                          FakeKolkataV2          FakeCairoV2            No
+qnn_mapped_ibm_montreal_qiskit_opt0_2              FakeCairoV2            FakeCairoV2            Yes
+dj_indep_qiskit_14                                 FakeHanoiV2            FakeHanoiV2            Yes
+qpeinexact_indep_qiskit_9                          FakeCairoV2            FakeCairoV2            Yes
+wstate_nativegates_ibm_qiskit_opt0_4               FakeCairoV2            FakeCairoV2            Yes
+qpeexact_indep_qiskit_6                            FakeCairoV2            FakeCairoV2            Yes
+graphstate_nativegates_ibm_qiskit_opt0_3           FakeManhattanV2        FakeCairoV2            No
+qwalk-v-chain_nativegates_ibm_qiskit_opt0_9        FakeCairoV2            FakeCairoV2            Yes
+ae_indep_qiskit_5                                  FakeCairoV2            FakeCairoV2            Yes
+su2random_indep_qiskit_5                           FakeCairoV2            FakeCairoV2            Yes
+ae_nativegates_ibm_qiskit_opt0_5                   FakeCairoV2            FakeCairoV2            Yes
+graphstate_indep_qiskit_15                         FakeRochesterV2        FakeKolkataV2          No
+dj_nativegates_ibm_qiskit_opt0_2                   FakeCairoV2            FakeCairoV2            Yes
+random_nativegates_ibm_qiskit_opt0_3               FakeCairoV2            FakeCairoV2            Yes
+portfoliovqe_mapped_ibm_montreal_qiskit_opt0_4     FakeCairoV2            FakeCairoV2            Yes
+twolocalrandom_mapped_ibm_montreal_qiskit_opt0_2   FakeCairoV2            FakeCairoV2            Yes
+qft_nativegates_ibm_qiskit_opt0_9                  FakeKyoto              FakeCairoV2            No
+ae_indep_qiskit_13                                 FakeCairoV2            FakeCairoV2            Yes
+qft_nativegates_ibm_qiskit_opt0_7                  FakeGeneva             FakeHanoiV2            No
+portfolioqaoa_nativegates_ibm_qiskit_opt0_8        FakeHanoiV2            FakeKolkataV2          No
+ae_indep_qiskit_19                                 FakeCairoV2            FakeKolkataV2          No
+portfoliovqe_mapped_ibm_montreal_qiskit_opt0_7     FakeCairoV2            FakeCairoV2            Yes
+qftentangled_indep_qiskit_17                       FakeCairoV2            FakeCairoV2            Yes
+wstate_nativegates_ibm_qiskit_opt0_9               FakeHanoiV2            FakeCairoV2            No
+grover-noancilla_mapped_ibm_montreal_qiskit_opt0_2 FakeCairoV2            FakeCairoV2            Yes
+grover-noancilla_mapped_ibm_montreal_qiskit_opt0_4 FakeCairoV2            FakeCairoV2            Yes
+random_nativegates_ibm_qiskit_opt0_5               FakeCairoV2            FakeCairoV2            Yes
+twolocalrandom_nativegates_ibm_qiskit_opt0_5       FakeCairoV2            FakeCairoV2            Yes
+ghz_nativegates_ibm_qiskit_opt0_8                  FakeHanoiV2            FakeHanoiV2            Yes
+qaoa_indep_qiskit_10                               FakeHanoiV2            FakeHanoiV2            Yes
+qftentangled_nativegates_ibm_qiskit_opt0_9         FakeCairoV2            FakeCairoV2            Yes
+dj_indep_qiskit_9                                  FakeCairoV2            FakeCairoV2            Yes
+wstate_indep_qiskit_4                              FakeHanoiV2            FakeCairoV2            No
+twolocalrandom_nativegates_ibm_qiskit_opt0_2       FakeSherbrooke         FakeCairoV2            No
+grover-noancilla_indep_qiskit_6                    FakeCairoV2            FakeCairoV2            Yes
+random_mapped_ibm_montreal_qiskit_opt0_7           FakeCairoV2            FakeCairoV2            Yes
+qnn_indep_qiskit_9                                 FakeCairoV2            FakeCairoV2            Yes
+realamprandom_indep_qiskit_9                       FakeCairoV2            FakeCairoV2            Yes
+twolocalrandom_nativegates_ibm_qiskit_opt0_4       FakeCairoV2            FakeCairoV2            Yes
+dj_indep_qiskit_7                                  FakeHanoiV2            FakeHanoiV2            Yes
+graphstate_nativegates_ibm_qiskit_opt0_4           FakeSingaporeV2        FakeCairoV2            No
+qft_nativegates_ibm_qiskit_opt0_8                  FakeBoeblingenV2       FakeCairoV2            No
+graphstate_indep_qiskit_4                          FakeBrooklynV2         FakeCairoV2            No
+qpeexact_indep_qiskit_14                           FakeCairoV2            FakeCairoV2            Yes
+twolocalrandom_mapped_ibm_montreal_qiskit_opt0_9   FakeCairoV2            FakeCairoV2            Yes
+qaoa_indep_qiskit_16                               FakeKolkataV2          FakeHanoiV2            No
+su2random_indep_qiskit_3                           FakeBrisbane           FakeCairoV2            No
+vqe_indep_qiskit_9                                 FakeCairoV2            FakeCairoV2            Yes
+qaoa_indep_qiskit_7                                FakeHanoiV2            FakeHanoiV2            Yes
+qpeinexact_indep_qiskit_17                         FakeCairoV2            FakeCairoV2            Yes
+qnn_indep_qiskit_4                                 FakeCairoV2            FakeCairoV2            Yes
+qaoa_indep_qiskit_3                                FakeCairoV2            FakeCairoV2            Yes
+random_mapped_ibm_montreal_qiskit_opt0_8           FakeCairoV2            FakeCairoV2            Yes
+qpeinexact_indep_qiskit_2                          FakeQuebec             FakeCairoV2            No
+qwalk-noancilla_indep_qiskit_3                     FakeCairoV2            FakeCairoV2            Yes
+vqe_nativegates_ibm_qiskit_opt0_7                  FakeHanoiV2            FakeHanoiV2            Yes
+qaoa_nativegates_ibm_qiskit_opt0_7                 FakeHanoiV2            FakeHanoiV2            Yes
+wstate_nativegates_ibm_qiskit_opt0_5               FakeCairoV2            FakeCairoV2            Yes
+ae_mapped_ibm_montreal_qiskit_opt0_3               FakeQuebec             FakeCairoV2            No
+portfoliovqe_indep_qiskit_8                        FakeHanoiV2            FakeCairoV2            No
+qnn_mapped_ibm_montreal_qiskit_opt0_6              FakeCairoV2            FakeCairoV2            Yes
+qftentangled_indep_qiskit_12                       FakeCairoV2            FakeCairoV2            Yes
+random_nativegates_ibm_qiskit_opt0_2               FakeWashingtonV2       FakeCairoV2            No
+random_indep_qiskit_3                              FakeCairoV2            FakeCairoV2            Yes
+realamprandom_mapped_ibm_montreal_qiskit_opt0_5    FakeCairoV2            FakeCairoV2            Yes
+qft_mapped_ibm_montreal_qiskit_opt0_3              FakeHanoiV2            FakeCairoV2            No
+qpeexact_nativegates_ibm_qiskit_opt0_4             FakeCairoV2            FakeCairoV2            Yes
+ghz_mapped_ibm_montreal_qiskit_opt0_2              FakeCairoV2            FakeCairoV2            Yes
+random_mapped_ibm_montreal_qiskit_opt0_6           FakeCairoV2            FakeCairoV2            Yes
+ae_indep_qiskit_18                                 FakeCairoV2            FakeCairoV2            Yes
+grover-noancilla_mapped_ibm_montreal_qiskit_opt0_3 FakeCairoV2            FakeCairoV2            Yes
+wstate_indep_qiskit_5                              FakeCairoV2            FakeCairoV2            Yes
+vqe_mapped_ibm_montreal_qiskit_opt0_6              FakeCairoV2            FakeCairoV2            Yes
+ghz_mapped_ibm_montreal_qiskit_opt0_6              FakeHanoiV2            FakeCairoV2            No
+ghz_nativegates_ibm_qiskit_opt0_5                  FakeHanoiV2            FakeHanoiV2            Yes
+wstate_nativegates_ibm_qiskit_opt0_6               FakeHanoiV2            FakeHanoiV2            Yes
+ghz_indep_qiskit_11                                FakeHanoiV2            FakeHanoiV2            Yes
+grover-noancilla_mapped_ibm_montreal_qiskit_opt0_6 FakeCairoV2            FakeCairoV2            Yes
+random_indep_qiskit_4                              FakeBrisbane           FakeCairoV2            No
+ghz_mapped_ibm_montreal_qiskit_opt0_9              FakeCairoV2            FakeCairoV2            Yes
+qpeinexact_mapped_ibm_montreal_qiskit_opt0_6       FakeBrisbane           FakeCairoV2            No
+random_nativegates_ibm_qiskit_opt0_4               FakeCairoV2            FakeCairoV2            Yes
+qwalk-noancilla_nativegates_ibm_qiskit_opt0_3      FakeCairoV2            FakeCairoV2            Yes
+portfolioqaoa_nativegates_ibm_qiskit_opt0_9        FakeKolkataV2          FakeKolkataV2          Yes
+twolocalrandom_mapped_ibm_montreal_qiskit_opt0_5   FakeCairoV2            FakeCairoV2            Yes
+dj_mapped_ibm_montreal_qiskit_opt0_9               FakeCairoV2            FakeCairoV2            Yes
+ae_indep_qiskit_10                                 FakeCairoV2            FakeCairoV2            Yes
+qpeexact_mapped_ibm_montreal_qiskit_opt0_5         FakeCairoV2            FakeCairoV2            Yes
+qft_indep_qiskit_15                                FakeParisV2            FakeCairoV2            No
+portfoliovqe_nativegates_ibm_qiskit_opt0_5         FakeCairoV2            FakeCairoV2            Yes
+ghz_mapped_ibm_montreal_qiskit_opt0_3              FakeCairoV2            FakeHanoiV2            No
+random_indep_qiskit_7                              FakeHanoiV2            FakeCairoV2            No
+realamprandom_indep_qiskit_4                       FakeCairoV2            FakeCairoV2            Yes
+qpeinexact_nativegates_ibm_qiskit_opt0_3           FakeQuebec             FakeCairoV2            No
+qwalk-v-chain_mapped_ibm_montreal_qiskit_opt0_3    FakeCairoV2            FakeCairoV2            Yes
+ghz_nativegates_ibm_qiskit_opt0_2                  FakeCairoV2            FakeCairoV2            Yes
+graphstate_nativegates_ibm_qiskit_opt0_6           FakeSydneyV2           FakeCairoV2            No
+qpeinexact_indep_qiskit_19                         FakeCairoV2            FakeCairoV2            Yes
+qpeinexact_indep_qiskit_4                          FakeHanoiV2            FakeCairoV2            No
+qaoa_indep_qiskit_15                               FakeHanoiV2            FakeHanoiV2            Yes
+qnn_nativegates_ibm_qiskit_opt0_3                  FakeCairoV2            FakeCairoV2            Yes
+qpeexact_nativegates_ibm_qiskit_opt0_8             FakeCairoV2            FakeCairoV2            Yes
+qpeexact_indep_qiskit_10                           FakeCairoV2            FakeCairoV2            Yes
+twolocalrandom_indep_qiskit_9                      FakeCairoV2            FakeCairoV2            Yes
+qaoa_mapped_ibm_montreal_qiskit_opt0_3             FakeBrisbane           FakeCairoV2            No
+qwalk-v-chain_indep_qiskit_7                       FakeHanoiV2            FakeCairoV2            No
+su2random_nativegates_ibm_qiskit_opt0_5            FakeCairoV2            FakeCairoV2            Yes
+qft_indep_qiskit_12                                FakeKolkataV2          FakeCairoV2            No
+qwalk-v-chain_mapped_ibm_montreal_qiskit_opt0_5    FakeCairoV2            FakeCairoV2            Yes
+qpeexact_indep_qiskit_7                            FakeHanoiV2            FakeCairoV2            No
+random_indep_qiskit_2                              FakeMontrealV2         FakeCairoV2            No
+graphstate_nativegates_ibm_qiskit_opt0_9           FakeCairoV2            FakeCairoV2            Yes
+qaoa_indep_qiskit_9                                FakeHanoiV2            FakeCairoV2            No
+vqe_nativegates_ibm_qiskit_opt0_4                  FakeCairoV2            FakeCairoV2            Yes
+portfolioqaoa_indep_qiskit_4                       FakeHanoiV2            FakeHanoiV2            Yes
+ae_nativegates_ibm_qiskit_opt0_4                   FakeCairoV2            FakeCairoV2            Yes
+ghz_indep_qiskit_8                                 FakeHanoiV2            FakeHanoiV2            Yes
+twolocalrandom_nativegates_ibm_qiskit_opt0_8       FakeCairoV2            FakeCairoV2            Yes
+qpeexact_mapped_ibm_montreal_qiskit_opt0_6         FakeBrisbane           FakeCairoV2            No
+qpeexact_indep_qiskit_13                           FakeCairoV2            FakeCairoV2            Yes
+grover-noancilla_indep_qiskit_8                    FakeCairoV2            FakeCairoV2            Yes
+ghz_indep_qiskit_9                                 FakeHanoiV2            FakeHanoiV2            Yes
+grover-noancilla_nativegates_ibm_qiskit_opt0_9     FakeCairoV2            FakeCairoV2            Yes
+realamprandom_mapped_ibm_montreal_qiskit_opt0_3    FakeCairoV2            FakeCairoV2            Yes
+graphstate_indep_qiskit_7                          FakeParisV2            FakeHanoiV2            No
+qaoa_mapped_ibm_montreal_qiskit_opt0_4             FakeCairoV2            FakeCairoV2            Yes
+dj_mapped_ibm_montreal_qiskit_opt0_6               FakeQuebec             FakeCairoV2            No
+su2random_nativegates_ibm_qiskit_opt0_8            FakeCairoV2            FakeCairoV2            Yes
+wstate_mapped_ibm_montreal_qiskit_opt0_3           FakeCairoV2            FakeCairoV2            Yes
+vqe_indep_qiskit_11                                FakeHanoiV2            FakeHanoiV2            Yes
+qftentangled_indep_qiskit_14                       FakeGeneva             FakeCairoV2            No
+su2random_nativegates_ibm_qiskit_opt0_4            FakeCairoV2            FakeCairoV2            Yes
+qftentangled_nativegates_ibm_qiskit_opt0_7         FakeCairoV2            FakeCairoV2            Yes
+qpeinexact_indep_qiskit_18                         FakeCairoV2            FakeCairoV2            Yes
+ghz_indep_qiskit_3                                 FakeCairoV2            FakeCairoV2            Yes
+qwalk-v-chain_nativegates_ibm_qiskit_opt0_5        FakeCairoV2            FakeCairoV2            Yes
+portfolioqaoa_mapped_ibm_montreal_qiskit_opt0_9    FakeCairoV2            FakeCairoV2            Yes
+graphstate_mapped_ibm_montreal_qiskit_opt0_9       FakeMontrealV2         FakeCairoV2            No
+qft_mapped_ibm_montreal_qiskit_opt0_6              FakeBrisbane           FakeCairoV2            No
+qpeinexact_indep_qiskit_8                          FakeCairoV2            FakeCairoV2            Yes
+realamprandom_nativegates_ibm_qiskit_opt0_3        FakeCairoV2            FakeCairoV2            Yes
+su2random_indep_qiskit_7                           FakeCairoV2            FakeCairoV2            Yes
+ae_mapped_ibm_montreal_qiskit_opt0_8               FakeCairoV2            FakeCairoV2            Yes
+ae_nativegates_ibm_qiskit_opt0_6                   FakeCairoV2            FakeCairoV2            Yes
+qpeexact_nativegates_ibm_qiskit_opt0_3             FakeCairoV2            FakeCairoV2            Yes
+vqe_indep_qiskit_12                                FakeHanoiV2            FakeHanoiV2            Yes
+qpeexact_mapped_ibm_montreal_qiskit_opt0_9         FakeCairoV2            FakeCairoV2            Yes
+qft_nativegates_ibm_qiskit_opt0_4                  FakeHanoiV2            FakeCairoV2            No
+qaoa_nativegates_ibm_qiskit_opt0_9                 FakeHanoiV2            FakeCairoV2            No
+qnn_indep_qiskit_7                                 FakeHanoiV2            FakeCairoV2            No
+grover-v-chain_mapped_ibm_montreal_qiskit_opt0_5   FakeBrisbane           FakeCairoV2            No
+qpeinexact_mapped_ibm_montreal_qiskit_opt0_9       FakeBrisbane           FakeCairoV2            No
+dj_indep_qiskit_8                                  FakeHanoiV2            FakeHanoiV2            Yes
+grover-noancilla_mapped_ibm_montreal_qiskit_opt0_7 FakeBrisbane           FakeCairoV2            No
+qwalk-noancilla_mapped_ibm_montreal_qiskit_opt0_7  FakeCairoV2            FakeCairoV2            Yes
+twolocalrandom_mapped_ibm_montreal_qiskit_opt0_6   FakeCairoV2            FakeCairoV2            Yes
+dj_nativegates_ibm_qiskit_opt0_5                   FakeHanoiV2            FakeHanoiV2            Yes
+ghz_indep_qiskit_6                                 FakeHanoiV2            FakeHanoiV2            Yes
+ae_indep_qiskit_8                                  FakeCairoV2            FakeCairoV2            Yes
+twolocalrandom_indep_qiskit_2                      FakeCairoV2            FakeCairoV2            Yes
+grover-v-chain_indep_qiskit_3                      FakeCairoV2            FakeCairoV2            Yes
+qnn_nativegates_ibm_qiskit_opt0_7                  FakeHanoiV2            FakeCairoV2            No
+qaoa_mapped_ibm_montreal_qiskit_opt0_9             FakeCairoV2            FakeCairoV2            Yes
+qwalk-noancilla_mapped_ibm_montreal_qiskit_opt0_8  FakeBoeblingenV2       FakeCairoV2            No
+grover-noancilla_nativegates_ibm_qiskit_opt0_8     FakeCairoV2            FakeCairoV2            Yes
+dj_indep_qiskit_10                                 FakeHanoiV2            FakeHanoiV2            Yes
+su2random_indep_qiskit_9                           FakeCairoV2            FakeCairoV2            Yes
+twolocalrandom_indep_qiskit_4                      FakeCairoV2            FakeCairoV2            Yes
+wstate_nativegates_ibm_qiskit_opt0_2               FakeCairoV2            FakeCairoV2            Yes
+qwalk-noancilla_mapped_ibm_montreal_qiskit_opt0_5  FakeCairoV2            FakeCairoV2            Yes
+qft_indep_qiskit_6                                 FakeGeneva             FakeCairoV2            No
+graphstate_indep_qiskit_18                         FakeJohannesburgV2     FakeSherbrooke         No
+
+
+MISCLASSIFIED CIRCUITS:
+
+  Circuit: qft_indep_qiskit_17
+    True best: FakeSherbrooke (FOM=0.0040)
+    Pred best: FakeCairoV2 (FOM=0.1068)
+
+  Circuit: qpeinexact_indep_qiskit_3
+    True best: FakeKolkataV2 (FOM=9.9992)
+    Pred best: FakeCairoV2 (FOM=10.3371)
+
+  Circuit: graphstate_nativegates_ibm_qiskit_opt0_3
+    True best: FakeManhattanV2 (FOM=9.9959)
+    Pred best: FakeCairoV2 (FOM=9.9401)
+
+  Circuit: graphstate_indep_qiskit_15
+    True best: FakeRochesterV2 (FOM=0.0500)
+    Pred best: FakeKolkataV2 (FOM=2.7751)
+
+  Circuit: qft_nativegates_ibm_qiskit_opt0_9
+    True best: FakeKyoto (FOM=8.6982)
+    Pred best: FakeCairoV2 (FOM=8.2230)
+
+  Circuit: qft_nativegates_ibm_qiskit_opt0_7
+    True best: FakeGeneva (FOM=9.7476)
+    Pred best: FakeHanoiV2 (FOM=9.3992)
+
+  Circuit: portfolioqaoa_nativegates_ibm_qiskit_opt0_8
+    True best: FakeHanoiV2 (FOM=7.7697)
+    Pred best: FakeKolkataV2 (FOM=7.5564)
+
+  Circuit: ae_indep_qiskit_19
+    True best: FakeCairoV2 (FOM=6.0925)
+    Pred best: FakeKolkataV2 (FOM=4.9642)
+
+  Circuit: wstate_nativegates_ibm_qiskit_opt0_9
+    True best: FakeHanoiV2 (FOM=8.8544)
+    Pred best: FakeCairoV2 (FOM=8.5758)
+
+  Circuit: wstate_indep_qiskit_4
+    True best: FakeHanoiV2 (FOM=9.4636)
+    Pred best: FakeCairoV2 (FOM=9.9075)
+
+  Circuit: twolocalrandom_nativegates_ibm_qiskit_opt0_2
+    True best: FakeSherbrooke (FOM=9.9745)
+    Pred best: FakeCairoV2 (FOM=10.4944)
+
+  Circuit: graphstate_nativegates_ibm_qiskit_opt0_4
+    True best: FakeSingaporeV2 (FOM=9.9834)
+    Pred best: FakeCairoV2 (FOM=9.6982)
+
+  Circuit: qft_nativegates_ibm_qiskit_opt0_8
+    True best: FakeBoeblingenV2 (FOM=9.4243)
+    Pred best: FakeCairoV2 (FOM=9.3440)
+
+  Circuit: graphstate_indep_qiskit_4
+    True best: FakeBrooklynV2 (FOM=9.9893)
+    Pred best: FakeCairoV2 (FOM=9.4457)
+
+  Circuit: qaoa_indep_qiskit_16
+    True best: FakeKolkataV2 (FOM=3.1953)
+    Pred best: FakeHanoiV2 (FOM=6.3596)
+
+  Circuit: su2random_indep_qiskit_3
+    True best: FakeBrisbane (FOM=9.9710)
+    Pred best: FakeCairoV2 (FOM=10.4990)
+
+  Circuit: qpeinexact_indep_qiskit_2
+    True best: FakeQuebec (FOM=10.0000)
+    Pred best: FakeCairoV2 (FOM=10.3697)
+
+  Circuit: ae_mapped_ibm_montreal_qiskit_opt0_3
+    True best: FakeQuebec (FOM=9.9623)
+    Pred best: FakeCairoV2 (FOM=10.2544)
+
+  Circuit: portfoliovqe_indep_qiskit_8
+    True best: FakeHanoiV2 (FOM=8.9850)
+    Pred best: FakeCairoV2 (FOM=9.4963)
+
+  Circuit: random_nativegates_ibm_qiskit_opt0_2
+    True best: FakeWashingtonV2 (FOM=9.9997)
+    Pred best: FakeCairoV2 (FOM=10.4820)
+
+  Circuit: qft_mapped_ibm_montreal_qiskit_opt0_3
+    True best: FakeHanoiV2 (FOM=9.9950)
+    Pred best: FakeCairoV2 (FOM=9.6918)
+
+  Circuit: ghz_mapped_ibm_montreal_qiskit_opt0_6
+    True best: FakeHanoiV2 (FOM=8.9955)
+    Pred best: FakeCairoV2 (FOM=9.0761)
+
+  Circuit: random_indep_qiskit_4
+    True best: FakeBrisbane (FOM=9.9062)
+    Pred best: FakeCairoV2 (FOM=10.3951)
+
+  Circuit: qpeinexact_mapped_ibm_montreal_qiskit_opt0_6
+    True best: FakeBrisbane (FOM=9.1320)
+    Pred best: FakeCairoV2 (FOM=8.9345)
+
+  Circuit: qft_indep_qiskit_15
+    True best: FakeParisV2 (FOM=0.0393)
+    Pred best: FakeCairoV2 (FOM=0.1789)
+
+  Circuit: ghz_mapped_ibm_montreal_qiskit_opt0_3
+    True best: FakeCairoV2 (FOM=9.7189)
+    Pred best: FakeHanoiV2 (FOM=9.8852)
+
+  Circuit: random_indep_qiskit_7
+    True best: FakeHanoiV2 (FOM=9.6099)
+    Pred best: FakeCairoV2 (FOM=9.5038)
+
+  Circuit: qpeinexact_nativegates_ibm_qiskit_opt0_3
+    True best: FakeQuebec (FOM=9.9937)
+    Pred best: FakeCairoV2 (FOM=10.3615)
+
+  Circuit: graphstate_nativegates_ibm_qiskit_opt0_6
+    True best: FakeSydneyV2 (FOM=9.8795)
+    Pred best: FakeCairoV2 (FOM=9.3702)
+
+  Circuit: qpeinexact_indep_qiskit_4
+    True best: FakeHanoiV2 (FOM=9.9912)
+    Pred best: FakeCairoV2 (FOM=10.1288)
+
+  Circuit: qaoa_mapped_ibm_montreal_qiskit_opt0_3
+    True best: FakeBrisbane (FOM=9.7489)
+    Pred best: FakeCairoV2 (FOM=10.2767)
+
+  Circuit: qwalk-v-chain_indep_qiskit_7
+    True best: FakeHanoiV2 (FOM=8.5520)
+    Pred best: FakeCairoV2 (FOM=8.5101)
+
+  Circuit: qft_indep_qiskit_12
+    True best: FakeKolkataV2 (FOM=1.5307)
+    Pred best: FakeCairoV2 (FOM=4.7339)
+
+  Circuit: qpeexact_indep_qiskit_7
+    True best: FakeHanoiV2 (FOM=8.9750)
+    Pred best: FakeCairoV2 (FOM=9.6498)
+
+  Circuit: random_indep_qiskit_2
+    True best: FakeMontrealV2 (FOM=9.9988)
+    Pred best: FakeCairoV2 (FOM=10.4361)
+
+  Circuit: qaoa_indep_qiskit_9
+    True best: FakeHanoiV2 (FOM=8.9096)
+    Pred best: FakeCairoV2 (FOM=8.4958)
+
+  Circuit: qpeexact_mapped_ibm_montreal_qiskit_opt0_6
+    True best: FakeBrisbane (FOM=8.1600)
+    Pred best: FakeCairoV2 (FOM=8.9360)
+
+  Circuit: graphstate_indep_qiskit_7
+    True best: FakeParisV2 (FOM=9.7312)
+    Pred best: FakeHanoiV2 (FOM=9.3375)
+
+  Circuit: dj_mapped_ibm_montreal_qiskit_opt0_6
+    True best: FakeQuebec (FOM=8.5600)
+    Pred best: FakeCairoV2 (FOM=8.5986)
+
+  Circuit: qftentangled_indep_qiskit_14
+    True best: FakeGeneva (FOM=0.2800)
+    Pred best: FakeCairoV2 (FOM=0.3266)
+
+  Circuit: graphstate_mapped_ibm_montreal_qiskit_opt0_9
+    True best: FakeMontrealV2 (FOM=8.6172)
+    Pred best: FakeCairoV2 (FOM=6.8961)
+
+  Circuit: qft_mapped_ibm_montreal_qiskit_opt0_6
+    True best: FakeBrisbane (FOM=9.8843)
+    Pred best: FakeCairoV2 (FOM=9.4792)
+
+  Circuit: qft_nativegates_ibm_qiskit_opt0_4
+    True best: FakeHanoiV2 (FOM=9.9832)
+    Pred best: FakeCairoV2 (FOM=10.0103)
+
+  Circuit: qaoa_nativegates_ibm_qiskit_opt0_9
+    True best: FakeHanoiV2 (FOM=8.8625)
+    Pred best: FakeCairoV2 (FOM=8.6279)
+
+  Circuit: qnn_indep_qiskit_7
+    True best: FakeHanoiV2 (FOM=9.4055)
+    Pred best: FakeCairoV2 (FOM=9.6950)
+
+  Circuit: grover-v-chain_mapped_ibm_montreal_qiskit_opt0_5
+    True best: FakeBrisbane (FOM=8.3032)
+    Pred best: FakeCairoV2 (FOM=6.9499)
+
+  Circuit: qpeinexact_mapped_ibm_montreal_qiskit_opt0_9
+    True best: FakeBrisbane (FOM=7.4750)
+    Pred best: FakeCairoV2 (FOM=8.4650)
+
+  Circuit: grover-noancilla_mapped_ibm_montreal_qiskit_opt0_7
+    True best: FakeBrisbane (FOM=0.2582)
+    Pred best: FakeCairoV2 (FOM=0.8882)
+
+  Circuit: qnn_nativegates_ibm_qiskit_opt0_7
+    True best: FakeHanoiV2 (FOM=9.5570)
+    Pred best: FakeCairoV2 (FOM=9.7116)
+
+  Circuit: qwalk-noancilla_mapped_ibm_montreal_qiskit_opt0_8
+    True best: FakeBoeblingenV2 (FOM=0.2621)
+    Pred best: FakeCairoV2 (FOM=0.2189)
+
+  Circuit: qft_indep_qiskit_6
+    True best: FakeGeneva (FOM=9.8886)
+    Pred best: FakeCairoV2 (FOM=9.8369)
+
+  Circuit: graphstate_indep_qiskit_18
+    True best: FakeJohannesburgV2 (FOM=0.0011)
+    Pred best: FakeSherbrooke (FOM=-0.0003)

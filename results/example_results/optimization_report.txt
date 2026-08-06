@@ -1,0 +1,19 @@
+Q-Selector 优化版训练报告
+======================================================================
+
+特征重要性阈值: 0.005
+倾向性得分权重: 0.2
+保留特征: 32/56
+丢弃特征: 24/56
+
+Regression Performance:
+  Train R2: 0.9895
+  Test R2:  0.8583
+  Train MAE: 0.180507
+  Test MAE:  0.776943
+
+Configuration:
+  Feature Threshold: 0.005
+  Propensity Weight: 0.2
+  Retained Features: 32/56
+  Dropped Features: 24/56

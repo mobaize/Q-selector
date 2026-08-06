@@ -1,0 +1,4 @@
+﻿Baseline,Better(%),Worse(%),Equal,Avg FOM Diff,Avg Improvement(%)
+FakeKolkataV2,89.1,8.6,4,0.7883,87.80
+FakeHanoiV2,71.8,14.4,24,0.9820,454.37
+FakeMontrealV2,95.4,4.6,0,1.1604,92.60

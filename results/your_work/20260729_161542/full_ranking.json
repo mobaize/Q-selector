@@ -1,0 +1,188 @@
+{
+  "timestamp": "20260729_161542",
+  "total_circuits": 1,
+  "total_backends": 20,
+  "results": [
+    {
+      "circuit": "ae_indep_qiskit_10",
+      "qasm_file": "ae_indep_qiskit_10.qasm",
+      "circuit_features": {
+        "width": 10,
+        "depth": 54,
+        "total_gates": 102,
+        "single_qubit_gates": 47,
+        "two_qubit_gates": 54
+      },
+      "total_backends": 20,
+      "top1_recommendation": {
+        "backend": "FakeKolkataV2",
+        "predicted_fom": 8.011654,
+        "num_qubits": 27,
+        "cnot_error": 0.01091079,
+        "ro_error": 0.01217778
+      },
+      "all_rankings": [
+        {
+          "rank": 1,
+          "backend": "FakeKolkataV2",
+          "predicted_fom": 8.011654,
+          "num_qubits": 27,
+          "cnot_error": 0.01091079,
+          "ro_error": 0.01217778
+        },
+        {
+          "rank": 2,
+          "backend": "FakeCairoV2",
+          "predicted_fom": 7.926785,
+          "num_qubits": 27,
+          "cnot_error": 0.04948936,
+          "ro_error": 0.02632593
+        },
+        {
+          "rank": 3,
+          "backend": "FakeMontrealV2",
+          "predicted_fom": 7.180652,
+          "num_qubits": 27,
+          "cnot_error": 0.01021769,
+          "ro_error": 0.02497778
+        },
+        {
+          "rank": 4,
+          "backend": "FakeGeneva",
+          "predicted_fom": 6.85931,
+          "num_qubits": 27,
+          "cnot_error": 0.04808596,
+          "ro_error": 0.03967531
+        },
+        {
+          "rank": 5,
+          "backend": "FakeSydneyV2",
+          "predicted_fom": 6.844679,
+          "num_qubits": 27,
+          "cnot_error": 0.0175301,
+          "ro_error": 0.03891852
+        },
+        {
+          "rank": 6,
+          "backend": "FakeBrooklynV2",
+          "predicted_fom": 6.789428,
+          "num_qubits": 65,
+          "cnot_error": 0.01279442,
+          "ro_error": 0.02808923
+        },
+        {
+          "rank": 7,
+          "backend": "FakeBrisbane",
+          "predicted_fom": 6.758681,
+          "num_qubits": 127,
+          "cnot_error": 0.01961669,
+          "ro_error": 0.0311385
+        },
+        {
+          "rank": 8,
+          "backend": "FakeQuebec",
+          "predicted_fom": 6.753528,
+          "num_qubits": 127,
+          "cnot_error": 0.07372941,
+          "ro_error": 0.03546383
+        },
+        {
+          "rank": 9,
+          "backend": "FakeHanoiV2",
+          "predicted_fom": 6.148557,
+          "num_qubits": 27,
+          "cnot_error": 0.04357192,
+          "ro_error": 0.01808519
+        },
+        {
+          "rank": 10,
+          "backend": "FakeSingaporeV2",
+          "predicted_fom": 5.881466,
+          "num_qubits": 20,
+          "cnot_error": 0.01643519,
+          "ro_error": 0.046375
+        },
+        {
+          "rank": 11,
+          "backend": "FakeParisV2",
+          "predicted_fom": 5.77597,
+          "num_qubits": 27,
+          "cnot_error": 0.01565308,
+          "ro_error": 0.03038519
+        },
+        {
+          "rank": 12,
+          "backend": "FakeBoeblingenV2",
+          "predicted_fom": 5.608996,
+          "num_qubits": 20,
+          "cnot_error": 0.01614203,
+          "ro_error": 0.05258
+        },
+        {
+          "rank": 13,
+          "backend": "FakeWashingtonV2",
+          "predicted_fom": 5.506737,
+          "num_qubits": 127,
+          "cnot_error": 0.03881791,
+          "ro_error": 0.02748268
+        },
+        {
+          "rank": 14,
+          "backend": "FakeSherbrooke",
+          "predicted_fom": 4.976919,
+          "num_qubits": 127,
+          "cnot_error": 0.07204651,
+          "ro_error": 0.04147699
+        },
+        {
+          "rank": 15,
+          "backend": "FakeAlmadenV2",
+          "predicted_fom": 4.385159,
+          "num_qubits": 20,
+          "cnot_error": 0.02383477,
+          "ro_error": 0.0535
+        },
+        {
+          "rank": 16,
+          "backend": "FakeTorontoV2",
+          "predicted_fom": 3.965784,
+          "num_qubits": 27,
+          "cnot_error": 0.02082829,
+          "ro_error": 0.04482222
+        },
+        {
+          "rank": 17,
+          "backend": "FakeJohannesburgV2",
+          "predicted_fom": 3.710124,
+          "num_qubits": 20,
+          "cnot_error": 0.02809129,
+          "ro_error": 0.08412
+        },
+        {
+          "rank": 18,
+          "backend": "FakeManhattanV2",
+          "predicted_fom": 2.513588,
+          "num_qubits": 65,
+          "cnot_error": 0.31669904,
+          "ro_error": 0.04341692
+        },
+        {
+          "rank": 19,
+          "backend": "FakeRochesterV2",
+          "predicted_fom": 1.523232,
+          "num_qubits": 53,
+          "cnot_error": 0.12398798,
+          "ro_error": 0.14448113
+        },
+        {
+          "rank": 20,
+          "backend": "FakeKyoto",
+          "predicted_fom": 1.12807,
+          "num_qubits": 127,
+          "cnot_error": 1.0,
+          "ro_error": 0.03728976
+        }
+      ]
+    }
+  ]
+}
