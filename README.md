@@ -8,8 +8,8 @@ The bundled dataset covers 578 circuits and 20 simulated backend profiles.
 Requires Python 3.10 or later.
 
 ```bash
-git clone https://github.com/QCFlow/qcflow-q-selector.git
-cd qcflow-q-selector
+git clone https://github.com/mobaize/Q-selector.git
+cd Q-selector
 python -m venv .venv
 ```
 
@@ -36,6 +36,7 @@ q-selector data/QASM/ --top 3
 ```
 
 Training writes `results/trained_model_optimized.pkl` and `training_metadata.json`.
+Model files are not included in the repository; run training before the first recommendation.
 Recommendation ranks backends with enough qubits for the input circuit. FOM is
 Hellinger fidelity multiplied by 10; higher scores rank first. Scores are
 predictions for the bundled calibration snapshots, not live hardware measurements.
@@ -102,7 +103,7 @@ python -m sphinx -W -b html docs docs/_build/html
   See [`data/README.md`](data/README.md) and [`data/provenance.json`](data/provenance.json).
 - [`docs/`](docs/): installation, model details, and contribution notes.
 
-Based on [mobaize/Q-selector](https://github.com/mobaize/Q-selector).
+Maintained alongside [QCFlow/qcflow-q-selector](https://github.com/QCFlow/qcflow-q-selector).
 Original attribution is retained in [`LICENSE.md`](LICENSE.md) and [`CITATION.bib`](CITATION.bib).
 Models are generated locally; only load pickle files from a trusted source.
 

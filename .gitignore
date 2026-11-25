@@ -14,6 +14,9 @@ dist/
 docs/_build/
 
 # Generated models, predictions, and recommendation runs
+*.pkl
+*.pickle
+*.joblib
 results/*
 !results/example_results/
 .ruff_cache/

@@ -3,8 +3,8 @@
 Requires Python 3.10 or later.
 
 ```bash
-git clone https://github.com/QCFlow/qcflow-q-selector.git
-cd qcflow-q-selector
+git clone https://github.com/mobaize/Q-selector.git
+cd Q-selector
 python -m venv .venv
 ```
 
@@ -34,5 +34,5 @@ Optional dependency groups:
 | Data generation | `python -m pip install -e ".[data]"` |
 | Documentation | `python -m pip install -e ".[docs]"` |
 
-Train the model locally before the first recommendation. Generated models and
-run outputs are ignored by Git.
+Model files are not included. Train locally before the first recommendation.
+Generated models and run outputs are ignored by Git.

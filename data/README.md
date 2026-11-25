@@ -31,10 +31,9 @@ full counts. Prediction requires the circuit and backend features.
 
 Labels have not been regenerated with the corrected data generator.
 
-Original files at upstream commit `238cca87805a58193f8d00e483cf2ea75343aa1a`:
+Original measurement file at source commit `238cca87805a58193f8d00e483cf2ea75343aa1a`:
 
 - [Full measurement CSV](https://github.com/mobaize/Q-selector/blob/238cca87805a58193f8d00e483cf2ea75343aa1a/data/MQTBench_578_analysis_results.csv)
-- [Legacy model ZIP](https://github.com/mobaize/Q-selector/blob/238cca87805a58193f8d00e483cf2ea75343aa1a/results/trained_model_optimized.zip)
 
 Checksums and file sizes are recorded in `provenance.json`.
 
