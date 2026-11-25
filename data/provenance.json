@@ -1,0 +1,16 @@
+{
+  "source_repository": "https://github.com/mobaize/Q-selector",
+  "source_commit": "238cca87805a58193f8d00e483cf2ea75343aa1a",
+  "rows": 11560,
+  "circuits": 578,
+  "backends": 20,
+  "removed_columns": [
+    "Ideal_Counts_Full",
+    "Noisy_Counts_Full"
+  ],
+  "original_sha256": "7899b31e8be0ceffe847f8257009eea7c8b5bd4ccd6d5ce0783d94bef85bc5a4",
+  "original_bytes": 90344719,
+  "dataset_sha256": "4aaa2fd97410e48ad98aca6222db5ce3c8a591be49cb89e20c0105e101595e15",
+  "dataset_bytes": 2671983,
+  "labels_regenerated": false
+}

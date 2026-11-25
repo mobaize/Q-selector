@@ -1,2 +1,0 @@
-﻿circuit,qasm_file,width,depth,total_gates,recommended_backend,predicted_fom,num_qubits
-ae_indep_qiskit_10,ae_indep_qiskit_10.qasm,10,54,102,FakeKolkataV2,8.011654,27

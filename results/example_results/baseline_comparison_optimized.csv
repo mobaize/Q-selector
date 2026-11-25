@@ -1,4 +1,4 @@
-﻿Baseline,Better(%),Worse(%),Equal,Avg FOM Diff,Avg Improvement(%)
-FakeKolkataV2,89.1,8.6,4,0.7883,87.80
-FakeHanoiV2,71.8,14.4,24,0.9820,454.37
-FakeMontrealV2,95.4,4.6,0,1.1604,92.60
+baseline,circuits,better_pct,worse_pct,equal_count,mean_fom_difference,mean_improvement_pct,relative_comparison_circuits
+lowest_readout_error,174,80.45977011494253,11.494252873563218,14,0.556768908045977,257.8352418857813,174
+lowest_single_qubit_error,174,63.793103448275865,17.81609195402299,32,0.6011139655172414,285.1730748649943,174
+lowest_two_qubit_error,174,90.80459770114942,7.471264367816093,3,0.9181670114942528,179.81646016726336,174

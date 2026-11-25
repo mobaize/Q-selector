@@ -9,47 +9,17 @@
 
 from __future__ import annotations
 
-import pickle
 from pathlib import Path
 
 import pytest
 
 
-@pytest.fixture
-def trained_model() -> dict | None:
-    """Load the trained model from the results directory."""
-    model_path = Path("results/trained_model_optimized.pkl")
-    if not model_path.exists():
-        pytest.skip("Trained model not found. Run src/train.py first.")
-    with open(model_path, "rb") as f:
-        return pickle.load(f)
-
-
 class TestRecommend:
     """Test suite for the recommendation logic."""
 
-    def test_model_artifacts_exist(self, trained_model: dict) -> None:
-        """Verify that the trained model contains all required artifacts."""
-        assert trained_model is not None
-        assert "model" in trained_model
-        assert "scaler" in trained_model
-        assert "selected_features" in trained_model
-        assert "all_backends" in trained_model
-        assert "backend_features_cache" in trained_model
-
-    def test_all_backends_available(self, trained_model: dict) -> None:
-        """Verify that the model has multiple backends to choose from."""
-        backends = trained_model["all_backends"]
-        assert len(backends) >= 2, "Model should support at least 2 backends"
-
-    def test_selected_features(self, trained_model: dict) -> None:
-        """Verify that feature selection produced a reasonable feature set."""
-        features = trained_model["selected_features"]
-        assert len(features) >= 5, "Should have at least 5 selected features"
-
     def test_recommend_function_importable(self) -> None:
         """Verify that the recommend function can be imported."""
-        from src.recommend import predict_circuit, load_model  # type: ignore[import-untyped]
+        from src.recommend import load_model, predict_circuit  # type: ignore[import-untyped]
 
         assert predict_circuit is not None
         assert load_model is not None

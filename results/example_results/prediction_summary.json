@@ -1,0 +1,8 @@
+{
+  "total_test_circuits": 174,
+  "algorithm": null,
+  "top1_accuracy": 0.5862068965517241,
+  "top3_accuracy": 0.8333333333333334,
+  "mean_fom_regret": 0.17010683908045973,
+  "dataset_sha256": "4aaa2fd97410e48ad98aca6222db5ce3c8a591be49cb89e20c0105e101595e15"
+}

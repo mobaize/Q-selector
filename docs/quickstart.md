@@ -1,58 +1,64 @@
-# Quickstart
+# Usage
 
-This guide walks you through training Q-Selector and recommending a processor for an unknown quantum circuit.
+## Train
 
-## Prerequisites
-
-Ensure the package is installed and dependencies are available (see {doc}`installation`).
-
-## Step 1: Train the Model
-
-The generated PKL model is not stored in the repository. Create it locally
-before the first recommendation:
-
-```console
-$ python src/train.py
+```bash
+python src/train.py
 ```
 
-This writes the trained model and preprocessing artifacts to `results/`.
+Outputs in `results/`: model PKL, selected features, regression metrics, and
+training metadata with dependency versions and dataset checksum.
 
-## Step 2: Recommend a Backend
+## Recommend
 
-### Single Circuit
-
-```console
-$ q-selector data/QASM/ae_indep_qiskit_10.qasm
+```bash
+q-selector data/QASM/ae_indep_qiskit_10.qasm --no-save
+q-selector data/QASM/ --top 3
+q-selector circuit.qasm --algorithm ae
 ```
 
-Output is saved to `results/your_work/<timestamp>/`.
+Directories are searched recursively. The default ranking uses circuit and
+backend features. `--algorithm` adds a preference learned from the training set
+for the named algorithm. Renaming a file does not change the default ranking.
 
-```console
-$ q-selector data/QASM/ae_indep_qiskit_10.qasm --no-save
+| Option | Purpose |
+|---|---|
+| `--model PATH` | Load a model from another location |
+| `--backend-json DIR` | Override cached coupling maps |
+| `--output DIR` | Set the parent directory for saved runs |
+| `--top N` | Print the first N backends |
+| `--no-save` | Print results without saving files |
+
+Saved runs contain:
+
+| File | Content |
+|---|---|
+| `best_recommendation.csv` | First-ranked backend per input |
+| `full_ranking.csv` | All eligible backend scores |
+| `full_ranking.json` | Rankings, circuit features, and failed inputs |
+
+Backends with too few qubits are excluded. Inputs with no eligible backend or
+invalid QASM are reported as failures. Batch runs retain successful results and
+return a nonzero exit code when any input fails.
+
+## Evaluate
+
+```bash
+python src/predict.py
+python src/evaluate.py
 ```
 
-Terminal output only, no file written.
+The prediction report records Top-1/Top-3 accuracy and mean FOM regret on held-out
+circuits. Baseline comparisons use measured FOM, with capacity filtering applied
+to each circuit.
 
-### Batch Folder
+## Generate measurements
 
-```console
-$ q-selector data/QASM/
+```bash
+python -m pip install -e ".[data]"
+python src/data_generator.py path/to/qasm --backend FakeYorktownV2 --shots 2000 --seed 42
 ```
 
-Processes all `.qasm` files in the folder and produces a single consolidated output archive.
-
-### Output Files
-
-Each run creates a timestamped archive under `results/your_work/<timestamp>/`:
-
-| File | Description |
-|------|-------------|
-| `best_recommendation.csv` | One row per circuit with Top-1 backend and predicted FOM |
-| `full_ranking.csv` | Long table: every backend per circuit with rank, FOM, error rates |
-| `full_ranking.json` | Per-circuit grouped JSON with full rankings and circuit features |
-
-## Step 3: Interpret the Results
-
-The model assigns a **predicted FOM** (Figure of Merit, scaled Hellinger fidelity × 10) to each circuit–backend pair. Higher values indicate better expected performance. The recommended backend is the one with the highest predicted FOM.
-
-For a quick sanity check, compare the recommended backend's characteristics (qubit count, gate errors, connectivity) against the circuit's requirements (qubit width, two-qubit gate density, entanglement ratio).
+Use `--optimization-level 0`, `1`, `2`, or `3` to select the compilation setting.
+Existing pairs are skipped when run settings match; `--overwrite` recomputes them.
+Use a new output directory when changing shots, optimization level, or seed.

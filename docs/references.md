@@ -1,15 +1,11 @@
 # References
 
-If you use Q-Selector in your research, please cite the following:
+Repository: <https://github.com/QCFlow/qcflow-q-selector>
 
-```bibtex
-@misc{qselector,
-  title = {{Q-Selector}: {Machine} Learning Based Quantum Backend Selection for Unknown Quantum Circuits},
-  howpublished = {\url{https://github.com/mobaize/Q-selector}},
-  year = {2026},
-}
-```
+Upstream: <https://github.com/mobaize/Q-selector>
 
-## Acknowledgments
+Circuit collection: MQT Bench. The bundled circuit names and source comments
+are retained.
 
-This project builds on concepts from the quantum computing and machine learning communities, including the MQT Bench dataset for benchmarking quantum circuits.
+Citation entries for this repository and the upstream project are in
+`CITATION.bib`. The upstream MIT notice is retained in `LICENSE.md`.

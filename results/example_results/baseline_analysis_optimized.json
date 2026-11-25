@@ -1,0 +1,32 @@
+[
+  {
+    "baseline": "lowest_readout_error",
+    "circuits": 174,
+    "better_pct": 80.45977011494253,
+    "worse_pct": 11.494252873563218,
+    "equal_count": 14,
+    "mean_fom_difference": 0.556768908045977,
+    "mean_improvement_pct": 257.8352418857813,
+    "relative_comparison_circuits": 174
+  },
+  {
+    "baseline": "lowest_single_qubit_error",
+    "circuits": 174,
+    "better_pct": 63.793103448275865,
+    "worse_pct": 17.81609195402299,
+    "equal_count": 32,
+    "mean_fom_difference": 0.6011139655172414,
+    "mean_improvement_pct": 285.1730748649943,
+    "relative_comparison_circuits": 174
+  },
+  {
+    "baseline": "lowest_two_qubit_error",
+    "circuits": 174,
+    "better_pct": 90.80459770114942,
+    "worse_pct": 7.471264367816093,
+    "equal_count": 3,
+    "mean_fom_difference": 0.9181670114942528,
+    "mean_improvement_pct": 179.81646016726336,
+    "relative_comparison_circuits": 174
+  }
+]

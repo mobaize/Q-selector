@@ -11,17 +11,10 @@ from __future__ import annotations
 
 import warnings
 from importlib import metadata
-from pathlib import Path
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    pass
-
-ROOT = Path(__file__).parent.parent.resolve()
 
 try:
     version = metadata.version("q-selector")
-except ModuleNotFoundError:
+except metadata.PackageNotFoundError:
     warnings.warn(
         "Package should be installed to produce documentation! "
         "Assuming a modern git archive was used for version discovery.",
@@ -46,12 +39,10 @@ extensions = [
     "sphinx_design",
 ]
 
-templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 # -- Options for HTML output -------------------------------------------------
 html_theme = "furo"
-html_static_path = ["_static"]
 html_title = "Q-Selector"
 
 # -- Options for autodoc -----------------------------------------------------

@@ -1,21 +1,16 @@
-# Contributing
+# Development
 
-Contributions to Q-Selector are welcome!
+```bash
+python -m pip install -e ".[dev,data,docs]"
+python -m pytest
+python -m ruff check src tests docs/conf.py
+python -m ruff format --check src tests docs/conf.py
+python -m sphinx -W -b html docs docs/_build/html
+```
 
-## Development Setup
+Keep shared feature and ranking logic in `src/features.py`. Add regression tests
+for behavior changes and update the affected usage documentation.
 
-See {doc}`installation` for setting up a development environment.
-
-## Code Quality
-
-- **Formatting**: Follow the existing code style in neighboring files.
-- **Testing**: Add or update tests for every code change.
-- **Documentation**: Update the relevant docs for user-facing changes.
-- **Changelog**: Add an entry to `CHANGELOG.md` for notable changes.
-
-## Pull Request Process
-
-1. Ensure all existing tests pass.
-2. Add tests for new functionality.
-3. Update documentation if needed.
-4. Update `CHANGELOG.md`.
+Generated models, measurements, and recommendation runs belong under `results/`
+and are ignored by Git. Committed examples include training metadata so their
+data and dependency versions can be identified.

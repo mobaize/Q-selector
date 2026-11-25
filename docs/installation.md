@@ -1,46 +1,38 @@
 # Installation
 
-Q-Selector requires Python 3.10 or later and can be installed on all major operating systems.
+Requires Python 3.10 or later.
 
-## Quick Install
-
-```console
-$ git clone https://github.com/mobaize/Q-selector.git
-$ cd Q-selector
-$ python -m pip install -e .
+```bash
+git clone https://github.com/QCFlow/qcflow-q-selector.git
+cd qcflow-q-selector
+python -m venv .venv
 ```
 
-## Development Setup
+Linux/macOS:
 
-1.  Open a terminal in the Q-Selector project directory.
-
-2.  Create and activate a virtual environment:
-
-    ```console
-    $ python -m venv .venv
-    $ source .venv/bin/activate  # Linux/macOS
-    $ .venv\Scripts\activate     # Windows
-    ```
-
-3.  Install Q-Selector and the development dependencies:
-
-    ```console
-    (.venv) $ python -m pip install -e ".[dev]"
-    ```
-
-4.  Generate the model required by the recommendation and evaluation tools:
-
-    ```console
-    (.venv) $ python src/train.py
-    ```
-
-    The repository does not include `results/trained_model_optimized.pkl`.
-    This command generates it locally from the included dataset.
-
-## Verify Installation
-
-```console
-(.venv) $ python src/recommend.py data/QASM/ae_indep_qiskit_10.qasm --no-save
+```bash
+source .venv/bin/activate
 ```
 
-If the installation is successful, you should see a ranked list of recommended backends.
+Windows PowerShell:
+
+```powershell
+.venv\Scripts\Activate.ps1
+```
+
+```bash
+python -m pip install -e .
+python src/train.py
+q-selector data/QASM/ae_indep_qiskit_10.qasm --no-save
+```
+
+Optional dependency groups:
+
+| Group | Command |
+|---|---|
+| Tests and lint | `python -m pip install -e ".[dev,data]"` |
+| Data generation | `python -m pip install -e ".[data]"` |
+| Documentation | `python -m pip install -e ".[docs]"` |
+
+Train the model locally before the first recommendation. Generated models and
+run outputs are ignored by Git.

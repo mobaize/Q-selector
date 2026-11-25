@@ -1,259 +1,232 @@
-"""
-data_generator.py - 量子电路数据生成器
-负责从QASM文件获取数据，进行噪声模拟，并生成CSV文件
-"""
+"""Generate labeled circuit/backend measurements with local Aer simulations."""
 
-import os
-import csv
-import pandas as pd
-import numpy as np
-import re
-from math import log2
-from datetime import datetime
-from typing import List, Optional, Dict, Tuple, Any, Set
+import argparse
+import json
 from dataclasses import dataclass, field
-from enum import Enum
+from datetime import datetime, timezone
+from pathlib import Path
 
+import numpy as np
+import pandas as pd
 from qiskit import QuantumCircuit, transpile
+from qiskit.quantum_info import hellinger_fidelity
 from qiskit_aer import AerSimulator
 from qiskit_aer.noise import NoiseModel
-from qiskit_ibm_runtime.fake_provider import (
-    FakeAlmadenV2, FakeBoeblingenV2, FakeBrisbane, FakeBrooklynV2,
-    FakeCairoV2, FakeCasablancaV2, FakeGeneva, FakeHanoiV2,
-    FakeJohannesburgV2, FakeKolkataV2, FakeKyoto, FakeManhattanV2,
-    FakeMontrealV2, FakeNairobiV2, FakeParisV2, FakeQuebec,
-    FakeRochesterV2, FakeSherbrooke, FakeSingaporeV2, FakeSydneyV2,
-    FakeTorontoV2, FakeValenciaV2, FakeWashingtonV2, FakeYorktownV2
-)
-from qiskit.quantum_info import hellinger_fidelity
+from qiskit_ibm_runtime import fake_provider
 
-# ==================== 辅助函数 ====================
+BACKEND_NAMES = [
+    "FakeAlmadenV2",
+    "FakeBoeblingenV2",
+    "FakeBrisbane",
+    "FakeBrooklynV2",
+    "FakeCairoV2",
+    "FakeCasablancaV2",
+    "FakeGeneva",
+    "FakeHanoiV2",
+    "FakeJohannesburgV2",
+    "FakeKolkataV2",
+    "FakeKyoto",
+    "FakeManhattanV2",
+    "FakeMontrealV2",
+    "FakeNairobiV2",
+    "FakeParisV2",
+    "FakeQuebec",
+    "FakeRochesterV2",
+    "FakeSherbrooke",
+    "FakeSingaporeV2",
+    "FakeSydneyV2",
+    "FakeTorontoV2",
+    "FakeValenciaV2",
+    "FakeWashingtonV2",
+    "FakeYorktownV2",
+]
 
-def calculate_polarization_multiple_targets(counts: Dict[str, int], 
-                                           correct_states: Optional[List[str]] = None) -> float:
-    """
-    计算测量结果的极化程度（支持多个正确状态）
-    """
-    if not counts:
+
+def calculate_polarization_multiple_targets(counts, correct_states=None):
+    if not counts or not sum(counts.values()):
         return 0.0
-    
-    total_shots = sum(counts.values())
-    if total_shots == 0:
+    width = len(next(iter(counts)).replace(" ", ""))
+    if width == 0:
         return 0.0
-    
-    # 获取量子比特数（线路宽度w）
-    n_qubits = len(next(iter(counts.keys())))
-    
-    # 确定正确状态列表
     if correct_states is None:
-        correct_states = ['0' * n_qubits]
+        correct_states = ["0" * width]
     elif isinstance(correct_states, str):
         correct_states = [correct_states]
-    
-    # 调整状态长度
-    adjusted_states = []
-    for state in correct_states:
-        if len(state) < n_qubits:
-            state = state + '0' * (n_qubits - len(state))
-        elif len(state) > n_qubits:
-            state = state[:n_qubits]
-        adjusted_states.append(state)
-    
-    # 计算成功率S（命中任意一个正确结果的概率）
-    success_count = 0
-    for state in adjusted_states:
-        success_count += counts.get(state, 0)
-    
-    success_rate = success_count / total_shots
-    
-    # 计算分母中的项：1/2^w
-    denominator_term = 1.0 / (2 ** n_qubits)
-    
-    # 计算极化程度P = (S - 1/2^w) / (1 - 1/2^w)
-    if denominator_term == 1.0:  # 避免除以0
-        return 0.0
-    
-    polarization = (success_rate - denominator_term) / (1.0 - denominator_term)
-    
-    # 限制极化程度在合理范围内（理论上应该在-1到1之间）
-    polarization = max(min(polarization, 1.0), -1.0)
-    
-    return polarization
+    states = {state.ljust(width, "0")[:width] for state in correct_states}
+    success = sum(counts.get(state, 0) for state in states) / sum(counts.values())
+    uniform = 1 / 2**width
+    return max(-1.0, min(1.0, (success - uniform) / (1 - uniform)))
 
-# ==================== 常量定义 ====================
-
-class AnalysisMode(Enum):
-    """分析模式枚举"""
-    SINGLE_BACKEND = 'single_backend'
-    MULTI_BACKEND = 'multi_backend'
-
-# ==================== 配置类 ====================
 
 @dataclass
 class DataGeneratorConfig:
-    """数据生成配置"""
     qasm_dir: str
     output_dir: str = "results"
-    unified_csv: Optional[str] = None  # 改为可选，自动生成
+    unified_csv: str | None = None
     shots: int = 2000
-    backends: List[str] = field(default_factory=lambda: ["FakeWashingtonV2"])
-    algorithm: Optional[str] = None
-    algorithms: Optional[List[str]] = None
+    backends: list[str] = field(default_factory=lambda: ["FakeWashingtonV2"])
     incremental_update: bool = True
-    optimization_level: int = 1  # 添加编译优化级别
-    
-    def __post_init__(self):
-        """初始化后自动生成统一CSV文件名"""
-        if self.unified_csv is None:
-            # 从qasm_dir提取目录名作为文件名前缀
-            qasm_dir_name = os.path.basename(os.path.normpath(self.qasm_dir))
-            self.unified_csv = f"{qasm_dir_name}_analysis_results_O{self.optimization_level}.csv"
+    optimization_level: int = 1
+    seed: int = 42
 
-# ==================== 数据生成器类 ====================
+    def __post_init__(self):
+        if self.shots < 1:
+            raise ValueError("shots must be positive")
+        if self.optimization_level not in range(4):
+            raise ValueError("optimization_level must be 0, 1, 2 or 3")
+        if self.unified_csv is None:
+            self.unified_csv = (
+                f"{Path(self.qasm_dir).name}_analysis_results_O{self.optimization_level}.csv"
+            )
+
 
 class QuantumCircuitDataGenerator:
-    """量子电路数据生成器"""
-    
     BACKEND_MAP = {
-        "FakeAlmadenV2": FakeAlmadenV2,
-        "FakeBoeblingenV2": FakeBoeblingenV2,
-        "FakeBrisbane": FakeBrisbane,
-        "FakeBrooklynV2": FakeBrooklynV2,
-        "FakeCairoV2": FakeCairoV2,
-        "FakeCasablancaV2": FakeCasablancaV2,
-        "FakeGeneva": FakeGeneva,
-        "FakeHanoiV2": FakeHanoiV2,
-        "FakeJohannesburgV2": FakeJohannesburgV2,
-        "FakeKolkataV2": FakeKolkataV2,
-        "FakeKyoto": FakeKyoto,
-        "FakeManhattanV2": FakeManhattanV2,
-        "FakeMontrealV2": FakeMontrealV2,
-        "FakeNairobiV2": FakeNairobiV2,
-        "FakeParisV2": FakeParisV2,
-        "FakeQuebec": FakeQuebec,
-        "FakeRochesterV2": FakeRochesterV2,
-        "FakeSherbrooke": FakeSherbrooke,
-        "FakeSingaporeV2": FakeSingaporeV2,
-        "FakeSydneyV2": FakeSydneyV2,
-        "FakeTorontoV2": FakeTorontoV2,
-        "FakeValenciaV2": FakeValenciaV2,
-        "FakeWashingtonV2": FakeWashingtonV2,
-        "FakeYorktownV2": FakeYorktownV2,
-        "ideal": None
+        name: getattr(fake_provider, name) for name in BACKEND_NAMES if hasattr(fake_provider, name)
     }
-    
-    def __init__(self, config: DataGeneratorConfig):
-        self.config = config
-        self.processed_circuits = set()
-        
-        # 确保输出目录存在
-        os.makedirs(self.config.output_dir, exist_ok=True)
-        
-        # 统一CSV文件路径 - 改为在output_dir下
-        # 检查unified_csv是否是绝对路径，如果不是，则使用output_dir
-        if not os.path.isabs(self.config.unified_csv):
-            self.unified_csv_path = os.path.join(self.config.output_dir, self.config.unified_csv)
-        else:
-            self.unified_csv_path = self.config.unified_csv
-        
-        # 加载已处理的数据
-        self.load_processed_circuits()
 
-    def load_processed_circuits(self) -> Set[Tuple[str, str]]:
-        """加载已处理的电路"""
-        processed = set()
-        if os.path.exists(self.unified_csv_path):
-            try:
-                df = pd.read_csv(self.unified_csv_path)
-                if not df.empty and 'Circuit' in df.columns and 'Backend' in df.columns:
-                    for _, row in df.iterrows():
-                        processed.add((str(row['Circuit']), str(row['Backend'])))
-                    print(f"📊 已加载 {len(processed)} 个已处理的电路+后端组合")
-            except Exception as e:
-                print(f"⚠️ 读取统一CSV文件失败: {e}")
-        return processed
-    
-    def is_processed(self, circuit_name: str, backend_name: str) -> bool:
-        """检查电路是否已处理"""
+    def __init__(self, config):
+        self.config = config
+        unknown = set(config.backends) - self.BACKEND_MAP.keys() - {"ideal"}
+        if unknown:
+            raise ValueError(f"Unknown or unavailable backends: {sorted(unknown)}")
+        self._backends = {}
+        self.unified_csv_path = Path(config.unified_csv)
+        if not self.unified_csv_path.is_absolute():
+            self.unified_csv_path = Path(config.output_dir) / self.unified_csv_path
+        self.unified_csv_path.parent.mkdir(parents=True, exist_ok=True)
+        self.processed_circuits = self.load_processed_circuits()
+
+    def get_backend(self, name):
+        if name not in self.BACKEND_MAP:
+            raise ValueError(f"Unknown or unavailable backend: {name}")
+        if name not in self._backends:
+            self._backends[name] = self.BACKEND_MAP[name]()
+        return self._backends[name]
+
+    def load_processed_circuits(self):
+        if not self.unified_csv_path.exists():
+            return set()
+        df = pd.read_csv(self.unified_csv_path)
+        required = {"Circuit", "Backend", "Shots", "Optimization_Level", "Seed"}
+        if not required.issubset(df.columns):
+            raise ValueError("Existing CSV lacks run settings; use a new output file")
+        if not (
+            df["Shots"].eq(self.config.shots).all()
+            and df["Optimization_Level"].eq(self.config.optimization_level).all()
+            and df["Seed"].eq(self.config.seed).all()
+        ):
+            raise ValueError("Existing CSV has different run settings; use a new output file")
+        return set(zip(df["Circuit"], df["Backend"]))
+
+    def is_processed(self, circuit_name, backend_name):
         return (circuit_name, backend_name) in self.processed_circuits
-    
-    def calculate_error_rates(self, backend_name: str):
-        """计算后端的平均错误率"""
-        try:
-            if backend_name == "ideal":
-                return 0.0, 0.0, 0.0
-            
-            if backend_name not in self.BACKEND_MAP:
-                backend_name = "FakeWashingtonV2"
-            
-            backend_class = self.BACKEND_MAP[backend_name]
-            backend = backend_class()
-            
-            single_errors = []
-            two_errors = []
-            readout_errors = []
-            
-            # 从 properties 获取错误率
-            if hasattr(backend, 'properties') and backend.properties() is not None:
-                props = backend.properties()
-                
-                # 读出错误率
-                for qubit in range(backend.num_qubits):
-                    try:
-                        readout_err = props.readout_error(qubit)
-                        if readout_err is not None:
-                            readout_errors.append(readout_err)
-                    except:
-                        pass
-                
-                # 单比特门错误率
-                for gate in props.gates:
-                    if gate.gate in ['sx', 'x', 'id', 'u1', 'u2', 'u3'] and len(gate.qubits) == 1:
-                        for param in gate.parameters:
-                            if param.name == 'gate_error' and param.value < 1.0:  # 过滤损坏的门
-                                single_errors.append(param.value)
-                
-                # 两比特门错误率
-                two_qubit_gates = ['cx', 'cz', 'ecr', 'cnot']
-                for gate in props.gates:
-                    if gate.gate in two_qubit_gates and len(gate.qubits) == 2:
-                        for param in gate.parameters:
-                            if param.name == 'gate_error' and param.value < 1.0:  # 过滤损坏的门
-                                two_errors.append(param.value)
-            
-            # 从 target 获取错误率（作为补充）
-            if hasattr(backend, 'target') and backend.target is not None:
-                target = backend.target
-                
-                # 单比特门错误率
-                for gate in ['x', 'sx', 'rz', 'id']:
-                    if gate in target:
-                        for inst in target[gate].values():
-                            if hasattr(inst, 'error') and inst.error is not None and inst.error < 1.0:
-                                single_errors.append(inst.error)
-                
-                # 两比特门错误率
-                for gate in ['cx', 'cz', 'ecr']:
-                    if gate in target:
-                        for inst in target[gate].values():
-                            if hasattr(inst, 'error') and inst.error is not None and inst.error < 1.0:
-                                two_errors.append(inst.error)
-            
-            # 计算平均值
-            avg_single_qubit_error = sum(single_errors) / len(single_errors) if single_errors else 0.0
-            avg_two_qubit_error = sum(two_errors) / len(two_errors) if two_errors else 0.0
-            avg_readout_error = sum(readout_errors) / len(readout_errors) if readout_errors else 0.0
-            
-            return avg_single_qubit_error, avg_two_qubit_error, avg_readout_error
-        except Exception as e:
-            print(f"Error calculating error rates for {backend_name}: {e}")
+
+    def calculate_error_rates(self, backend_name):
+        if backend_name == "ideal":
             return 0.0, 0.0, 0.0
-    
-    def save_to_unified_csv(self, result: Dict[str, Any]):
-        """保存结果到统一CSV文件"""
-        # 计算错误率
-        single_qubit_error, two_qubit_error, readout_error = self.calculate_error_rates(result["backend"])
-        
+        target = self.get_backend(backend_name).target
+        single, two, readout = [], [], []
+        for name in target.operation_names:
+            if name in {"reset", "delay"}:
+                continue
+            for qubits, properties in target[name].items():
+                if properties is None or properties.error is None or qubits is None:
+                    continue
+                error = properties.error
+                if not 0 <= error <= 1:
+                    raise ValueError(f"Invalid error rate for {backend_name}: {name}{qubits}")
+                if name == "measure":
+                    readout.append(error)
+                elif len(qubits) == 1:
+                    single.append(error)
+                elif len(qubits) == 2:
+                    two.append(error)
+        if not single or not two or not readout:
+            raise ValueError(f"Missing error rates for {backend_name}")
+        return tuple(float(np.mean(values)) for values in [single, two, readout])
+
+    def create_noise_model(self, backend_name):
+        if backend_name == "ideal":
+            return None
+        backend = self.get_backend(backend_name)
+        try:
+            noise_model = NoiseModel.from_backend(backend)
+        except Exception as exc:
+            raise RuntimeError(f"Cannot create noise model for {backend_name}: {exc}") from exc
+        if noise_model is None or noise_model.is_ideal():
+            raise RuntimeError(f"Empty noise model for {backend_name}")
+        return noise_model
+
+    def run_noisy_simulation(self, qc, backend_name):
+        backend = None if backend_name == "ideal" else self.get_backend(backend_name)
+        if backend is not None and qc.num_qubits > backend.num_qubits:
+            raise ValueError(f"{qc.num_qubits}-qubit circuit exceeds {backend_name} capacity")
+        noise_model = self.create_noise_model(backend_name)
+        if backend_name != "ideal" and noise_model is None:
+            raise RuntimeError(f"Missing noise model for {backend_name}")
+        ideal_sim = AerSimulator(seed_simulator=self.config.seed)
+        ideal_circuit = transpile(
+            qc,
+            ideal_sim,
+            optimization_level=self.config.optimization_level,
+            seed_transpiler=self.config.seed,
+        )
+        ideal_counts = ideal_sim.run(ideal_circuit, shots=self.config.shots).result().get_counts()
+        if backend_name == "ideal":
+            counts, compiled = ideal_counts, ideal_circuit
+        else:
+            compiled = transpile(
+                qc,
+                backend,
+                optimization_level=self.config.optimization_level,
+                seed_transpiler=self.config.seed,
+            )
+            simulator = AerSimulator.from_backend(
+                backend,
+                noise_model=noise_model,
+                seed_simulator=self.config.seed,
+            )
+            counts = simulator.run(compiled, shots=self.config.shots).result().get_counts()
+        fidelity = hellinger_fidelity(ideal_counts, counts)
+        polarization = calculate_polarization_multiple_targets(counts, correct_states=ideal_counts)
+        return ideal_counts, counts, fidelity, polarization, compiled
+
+    @staticmethod
+    def extract_algorithm_name(circuit_name):
+        return circuit_name.split("_")[0]
+
+    def analyze_single_circuit(self, qasm_file, backend_name):
+        try:
+            qc = QuantumCircuit.from_qasm_file(str(qasm_file))
+            if not any(inst.operation.name == "measure" for inst in qc.data):
+                raise ValueError("No measurement gates")
+            ideal, noisy, fidelity, polarization, compiled = self.run_noisy_simulation(
+                qc, backend_name
+            )
+            return {
+                "circuit_name": Path(qasm_file).stem,
+                "algorithm_name": self.extract_algorithm_name(Path(qasm_file).stem),
+                "backend": backend_name,
+                "width": compiled.num_qubits,
+                "depth": compiled.depth(),
+                "total_gates": len(compiled.data),
+                "single_qubit_gates": sum(
+                    len(i.qubits) == 1 and i.operation.name != "measure" for i in compiled.data
+                ),
+                "two_qubit_gates": sum(len(i.qubits) == 2 for i in compiled.data),
+                "measure_gates": compiled.count_ops().get("measure", 0),
+                "hellinger_fidelity": fidelity,
+                "polarization": polarization,
+                "ideal_counts": ideal,
+                "noisy_counts": noisy,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+            }
+        except Exception as exc:
+            return {"error": str(exc)}
+
+    def save_to_unified_csv(self, result):
+        single, two, readout = self.calculate_error_rates(result["backend"])
         row = {
             "Circuit": result["circuit_name"],
             "Algorithm": result["algorithm_name"],
@@ -264,343 +237,96 @@ class QuantumCircuitDataGenerator:
             "Single_Qubit_Gates": result["single_qubit_gates"],
             "Two_Qubit_Gates": result["two_qubit_gates"],
             "Measure_Gates": result["measure_gates"],
-            "Optimization_Level": result.get("optimization_level", self.config.optimization_level),
-            "Single_Qubit_Error_Rate": f"{single_qubit_error:.6f}",
-            "Two_Qubit_Error_Rate": f"{two_qubit_error:.6f}",
-            "Readout_Error_Rate": f"{readout_error:.6f}",
-            "Hellinger_Fidelity": f"{result['hellinger_fidelity']:.6f}",
-            "Polarization": f"{result['polarization']:.6f}",
-            "Ideal_Counts_Full": result.get("ideal_counts_full", ""),
-            "Noisy_Counts_Full": result.get("noisy_counts_full", ""),
+            "Single_Qubit_Error_Rate": single,
+            "Two_Qubit_Error_Rate": two,
+            "Readout_Error_Rate": readout,
+            "Hellinger_Fidelity": result["hellinger_fidelity"],
+            "Polarization": result["polarization"],
+            "Ideal_Counts_Full": json.dumps(result["ideal_counts"]),
+            "Noisy_Counts_Full": json.dumps(result["noisy_counts"]),
             "Shots": self.config.shots,
-            "Timestamp": result["timestamp"]
+            "Optimization_Level": self.config.optimization_level,
+            "Seed": self.config.seed,
+            "Timestamp": result["timestamp"],
         }
-        
-        if os.path.exists(self.unified_csv_path):
-            try:
-                df_existing = pd.read_csv(self.unified_csv_path)
-                
-                # 检查是否需要添加新列
-                new_columns = [col for col in row.keys() if col not in df_existing.columns]
-                if new_columns:
-                    for col in new_columns:
-                        df_existing[col] = ""
-                    print(f"🔄 添加新列: {', '.join(new_columns)}")
-                
-                mask = (df_existing['Circuit'] == row['Circuit']) & (df_existing['Backend'] == row['Backend'])
-                if mask.any():
-                    for key, value in row.items():
-                        if key in df_existing.columns:
-                            df_existing.loc[mask, key] = value
-                    print(f"🔄 更新记录: {row['Circuit']} @ {row['Backend']}")
-                else:
-                    df_existing = pd.concat([df_existing, pd.DataFrame([row])], ignore_index=True)
-                    print(f"✅ 添加新记录: {row['Circuit']} @ {row['Backend']}")
-                df_existing.to_csv(self.unified_csv_path, index=False)
-            except Exception as e:
-                print(f"⚠️ 读取CSV文件失败，重新创建: {e}")
-                self._append_to_csv(row, write_header=True)
-        else:
-            self._append_to_csv(row, write_header=True)
-    
-    def _append_to_csv(self, row: Dict, write_header: bool):
-        """直接追加到CSV文件"""
-        mode = 'a' if not write_header else 'w'
-        with open(self.unified_csv_path, mode, newline='', encoding='utf-8') as f:
-            writer = csv.DictWriter(f, fieldnames=row.keys())
-            if write_header:
-                writer.writeheader()
-            writer.writerow(row)
-    
-    # ==================== 核心分析函数 ====================
-    
-    @staticmethod
-    def extract_algorithm_name(circuit_name: str) -> str:
-        """从电路名称提取算法名称"""
-        return circuit_name.split('_')[0] if '_' in circuit_name else circuit_name
+        frame = pd.DataFrame([row])
+        if self.unified_csv_path.exists():
+            existing = pd.read_csv(self.unified_csv_path)
+            duplicate = (existing["Circuit"] == row["Circuit"]) & (
+                existing["Backend"] == row["Backend"]
+            )
+            frame = pd.concat([existing[~duplicate], frame], ignore_index=True)
+        temporary = self.unified_csv_path.with_suffix(".csv.tmp")
+        frame.to_csv(temporary, index=False)
+        temporary.replace(self.unified_csv_path)
 
-    def create_noise_model(self, backend_name: str) -> Optional[NoiseModel]:
-        """根据后端名称创建噪声模型"""
-        if backend_name == "ideal":
-            return None
-        
-        if backend_name not in self.BACKEND_MAP:
-            backend_name = "FakeWashingtonV2"
-        
-        try:
-            backend_class = self.BACKEND_MAP[backend_name]
-            fake_backend = backend_class()
-            return NoiseModel.from_backend(fake_backend)
-        except Exception:
-            return None
-    
-    def run_noisy_simulation(self, qc: QuantumCircuit, backend_name: str) -> Tuple[Dict[str, int], Dict[str, int], float, float]:
-        """使用噪声模型进行模拟"""
-        noise_model = self.create_noise_model(backend_name)
-        shots = self.config.shots
-        
-        try:
-            # 1. 理想模拟（无噪声）
-            simulator_ideal = AerSimulator()
-            # 使用优化级别进行转译
-            qc_transpiled_ideal = transpile(qc, simulator_ideal, optimization_level=self.config.optimization_level)
-            result_ideal = simulator_ideal.run(qc_transpiled_ideal, shots=shots).result()
-            counts_ideal = result_ideal.get_counts()
-            
-            # 2. 带噪声模拟
-            if noise_model is not None:
-                simulator_noisy = AerSimulator(noise_model=noise_model)
-                # 使用相同的优化级别进行转译
-                qc_transpiled_noisy = transpile(qc, simulator_noisy, optimization_level=self.config.optimization_level)
-                result_noisy = simulator_noisy.run(qc_transpiled_noisy, shots=shots).result()
-                counts_noisy = result_noisy.get_counts()
-                # 使用转译后的电路统计门信息
-                qc_transpiled = qc_transpiled_noisy
-            else:
-                # 无噪声情况，噪声计数等于理想计数
-                counts_noisy = counts_ideal
-                qc_transpiled = qc_transpiled_ideal
-            
-            # 3. 计算海林格保真度（基于计数分布）
-            fidelity = hellinger_fidelity(counts_ideal, counts_noisy)
-            
-            # 4. 计算极化程度
-            polarization = calculate_polarization_multiple_targets(counts_noisy, correct_states=counts_ideal)
-            
-            return counts_ideal, counts_noisy, fidelity, polarization, qc_transpiled
-        except Exception as e:
-            # 捕获所有模拟错误，包括Qiskit转译器的内部错误
-            raise RuntimeError(f"Simulation error: {str(e)}")
-    
-    def analyze_single_circuit(self, qasm_file: str, backend_name: str) -> Dict[str, Any]:
-        """分析单个QASM文件"""
-        try:
-            with open(qasm_file, 'r') as f:
-                qasm_str = f.read()
-            
-            qc = QuantumCircuit.from_qasm_str(qasm_str)
-            
-            # 检查是否有测量操作
-            if not any(op.name == 'measure' for op in qc.data):
-                return {"error": "No measurement gates"}
-            
-            try:
-                counts_ideal, counts_noisy, fidelity, polarization, qc_transpiled = self.run_noisy_simulation(qc, backend_name)
-            except Exception as e:
-                # 捕获Qiskit转译器的内部错误
-                return {"error": f"Simulation error: {str(e)}"}
-            
-            # 计算编译后的门统计
-            gate_counts = {}
-            total_gates = 0
-            single_gates = 0
-            two_gates = 0
-            measure_gates = 0
-            
-            for instr in qc_transpiled.data:
-                gate_name = instr.operation.name
-                gate_counts[gate_name] = gate_counts.get(gate_name, 0) + 1
-                
-                if gate_name == 'measure':
-                    measure_gates += 1
-                elif len(instr.qubits) == 1:
-                    single_gates += 1
-                elif len(instr.qubits) == 2:
-                    two_gates += 1
-                
-                total_gates += 1
-            
-            circuit_name = os.path.splitext(os.path.basename(qasm_file))[0]
-            algorithm_name = self.extract_algorithm_name(circuit_name)
-            
-            # 转换计数为字符串格式
-            def counts_to_string(counts):
-                return '; '.join([f"{state}:{count}" for state, count in counts.items()])
-            
-            ideal_counts_full = counts_to_string(counts_ideal)
-            noisy_counts_full = counts_to_string(counts_noisy)
-            
-            return {
-                "circuit_name": circuit_name,
-                "algorithm_name": algorithm_name,
-                "width": qc_transpiled.num_qubits,  # 使用编译后的宽度
-                "depth": qc_transpiled.depth(),  # 使用编译后的深度
-                "total_gates": total_gates,  # 使用编译后的门统计
-                "single_qubit_gates": single_gates,
-                "two_qubit_gates": two_gates,
-                "measure_gates": measure_gates,
-                "backend": backend_name,
-                "hellinger_fidelity": fidelity,
-                "polarization": polarization,
-                "ideal_counts": counts_ideal,
-                "noisy_counts": counts_noisy,
-                "ideal_counts_full": ideal_counts_full,
-                "noisy_counts_full": noisy_counts_full,
-                "optimization_level": self.config.optimization_level,
-                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            }
-        except Exception as e:
-            return {"error": str(e)}
-    
-    def analyze_single_backend(self, backend_name: str) -> Tuple[int, int]:
-        """分析单个后端的所有电路"""
-        print(f"\n🔬 分析后端: {backend_name}")
-        
-        qasm_files = [f for f in os.listdir(self.config.qasm_dir) if f.endswith(".qasm")]
-        qasm_files.sort()
-        
-        print(f"发现 {len(qasm_files)} 个QASM文件")
-        print(f"测量次数: {self.config.shots} 次/模拟")
-        print(f"编译优化级别: O{self.config.optimization_level}")
-        
-        success_count = 0
-        error_count = 0
-        skipped_count = 0
-        
-        for idx, filename in enumerate(qasm_files, 1):
-            circuit_name = os.path.splitext(filename)[0]
-            
-            if self.config.incremental_update and self.is_processed(circuit_name, backend_name):
-                print(f"[{idx}/{len(qasm_files)}] 跳过: {filename} @ {backend_name}")
-                skipped_count += 1
+    def analyze_single_backend(self, backend_name):
+        success = errors = 0
+        files = sorted(Path(self.config.qasm_dir).glob("*.qasm"))
+        for path in files:
+            if self.config.incremental_update and self.is_processed(path.stem, backend_name):
                 continue
-            
-            print(f"[{idx}/{len(qasm_files)}] 处理: {filename} @ {backend_name}")
-            
-            filepath = os.path.join(self.config.qasm_dir, filename)
-            result = self.analyze_single_circuit(filepath, backend_name)
-            
+            result = self.analyze_single_circuit(path, backend_name)
             if "error" in result:
-                error_count += 1
-                print(f"    ❌ 错误: {result['error']}")
-            else:
-                success_count += 1
-                self.save_to_unified_csv(result)
-                self.processed_circuits.add((result["circuit_name"], result["backend"]))
-                print(f"    ✅ 成功: Fidelity={result['hellinger_fidelity']:.4f}, Depth={result['depth']}")
-        
-        print(f"✅ 完成: 成功={success_count}, 错误={error_count}, 跳过={skipped_count}")
-        return success_count, error_count
-    
-    def run(self) -> Dict[str, Any]:
-        """运行数据生成流程"""
-        print("="*60)
-        print("量子电路数据生成器")
-        print("="*60)
-        print(f"📊 数据存储: {self.unified_csv_path}")
-        print(f"📂 QASM目录: {self.config.qasm_dir}")
-        print(f"🔧 编译优化级别: O{self.config.optimization_level}")
-        print("="*60)
-        
-        results = {
-            'config': self.config.__dict__,
-            'unified_csv': self.unified_csv_path,
-            'analysis_results': {}
-        }
-        
-        # 检查现有数据
-        if os.path.exists(self.unified_csv_path):
-            df = pd.read_csv(self.unified_csv_path)
-            print(f"📊 现有数据: {len(df)} 条记录")
-            print(f"  后端: {sorted(df['Backend'].unique())}")
-            print(f"  算法: {sorted(df['Algorithm'].unique())}")
-            
-            # 加载现有记录到processed_circuits
-            for _, row in df.iterrows():
-                self.processed_circuits.add((row['Circuit'], row['Backend']))
-            print(f"🔄 加载了 {len(self.processed_circuits)} 条已处理记录")
-        
-        # 执行分析
+                errors += 1
+                print(f"{path.name} @ {backend_name}: {result['error']}")
+                continue
+            self.save_to_unified_csv(result)
+            self.processed_circuits.add((path.stem, backend_name))
+            success += 1
+            print(f"{path.name} @ {backend_name}: fidelity {result['hellinger_fidelity']:.6f}")
+        return success, errors
+
+    def run(self):
+        if not Path(self.config.qasm_dir).is_dir():
+            raise ValueError(f"QASM directory not found: {self.config.qasm_dir}")
+        if not list(Path(self.config.qasm_dir).glob("*.qasm")):
+            raise ValueError(f"No QASM files found: {self.config.qasm_dir}")
+        results = {}
         for backend in self.config.backends:
-            success, error = self.analyze_single_backend(backend)
-            results['analysis_results'][backend] = {'success': success, 'error': error}
-        
-        # 显示最终数据统计
-        if os.path.exists(self.unified_csv_path):
-            df = pd.read_csv(self.unified_csv_path)
-            print(f"\n📊 最终数据统计:")
-            print(f"  总记录数: {len(df)}")
-            print(f"  后端数量: {len(df['Backend'].unique())}")
-            print(f"  算法数量: {len(df['Algorithm'].unique())}")
-            print(f"  量子比特范围: {df['Width'].min()} - {df['Width'].max()}")
-        
-        print("\n" + "="*60)
-        print("✅ 数据生成完成!")
-        print("="*60)
-        
-        return results
+            success, errors = self.analyze_single_backend(backend)
+            results[backend] = {"success": success, "error": errors}
+        return {"unified_csv": str(self.unified_csv_path), "analysis_results": results}
 
-# ==================== 快捷函数 ====================
 
-def quick_generate_data(qasm_dir: str, 
-                      backends: Optional[List[str]] = None,
-                      shots: int = 2000,
-                      incremental_update: bool = True,
-                      optimization_level: int = 1) -> Dict[str, Any]:
-    """
-    简化的快速数据生成函数
-    
-    参数:
-        qasm_dir: QASM文件目录
-        backends: 后端列表
-        shots: 测量次数
-        incremental_update: 是否增量更新
-        optimization_level: 编译优化级别 (0, 1, 2, 3)
-    """
-    if not backends:
-        backends = ["FakeWashingtonV2"]
-    
+def quick_generate_data(
+    qasm_dir, backends=None, shots=2000, incremental_update=True, optimization_level=1
+):
     config = DataGeneratorConfig(
         qasm_dir=qasm_dir,
-        backends=backends,
+        backends=backends or ["FakeWashingtonV2"],
         shots=shots,
         incremental_update=incremental_update,
-        optimization_level=optimization_level
+        optimization_level=optimization_level,
     )
-    
-    generator = QuantumCircuitDataGenerator(config)
-    return generator.run()
+    return QuantumCircuitDataGenerator(config).run()
 
-# ==================== 主程序入口 ====================
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("input", type=Path, help="Directory of QASM files")
+    parser.add_argument("--backend", action="append", dest="backends", required=True)
+    parser.add_argument("--output", type=Path, default=Path("results/generated"))
+    parser.add_argument("--shots", type=int, default=2000)
+    parser.add_argument("--seed", type=int, default=42)
+    parser.add_argument("--optimization-level", type=int, choices=range(4), default=1)
+    parser.add_argument("--overwrite", action="store_true", help="Recompute existing pairs")
+    args = parser.parse_args(argv)
+    config = DataGeneratorConfig(
+        qasm_dir=str(args.input),
+        output_dir=str(args.output),
+        backends=args.backends,
+        shots=args.shots,
+        seed=args.seed,
+        optimization_level=args.optimization_level,
+        incremental_update=not args.overwrite,
+    )
+    try:
+        results = QuantumCircuitDataGenerator(config).run()
+    except (ValueError, OSError) as exc:
+        parser.error(str(exc))
+    return int(any(row["error"] for row in results["analysis_results"].values()))
+
 
 if __name__ == "__main__":
-    # 生成-O1数据集
-    print("="*60)
-    print("生成 MQTBench 数据集 - O1 优化级别")
-    print("="*60)
-    
-    # 设置路径
-    qasm_dir = "MQTBench"  # QASM文件目录
-    output_dir = "results"  # 输出目录
-    csv_filename = "MQTBench_578_O1.csv"
-    
-    # 检查目录是否存在
-    if not os.path.exists(qasm_dir):
-        print(f"❌ 错误: QASM目录 '{qasm_dir}' 不存在")
-        print(f"请确保当前目录下有 MQTBench 文件夹，包含578个QASM文件")
-        exit(1)
-    
-    # 统计QASM文件数量
-    qasm_files = [f for f in os.listdir(qasm_dir) if f.endswith('.qasm')]
-    print(f"📁 发现 {len(qasm_files)} 个QASM文件")
-    
-    if len(qasm_files) == 0:
-        print("❌ 错误: 未找到任何QASM文件")
-        exit(1)
-    
-    # 创建配置
-    config = DataGeneratorConfig(
-        qasm_dir=qasm_dir,
-        output_dir=output_dir,
-        unified_csv=csv_filename,
-        shots=2000,
-        backends=["FakeWashingtonV2"],
-        incremental_update=True,
-        optimization_level=1  # O1优化
-    )
-    
-    # 创建生成器并运行
-    generator = QuantumCircuitDataGenerator(config)
-    results = generator.run()
-    
-    print(f"\n🎉 完成! 结果保存在: {os.path.join(output_dir, csv_filename)}")
+    raise SystemExit(main())

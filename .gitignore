@@ -13,5 +13,10 @@ dist/
 *.egg-info/
 docs/_build/
 
-# Locally generated Q-Selector model
-results/trained_model_optimized.pkl
+# Generated models, predictions, and recommendation runs
+results/*
+!results/example_results/
+.ruff_cache/
+.test-tmp*/
+.DS_Store
+Thumbs.db

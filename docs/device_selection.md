@@ -1,65 +1,57 @@
-# Device Selection
+# Model and features
 
-Q-Selector's device selection component is built on a **Random Forest regressor** that predicts the expected fidelity (FOM) for each circuit–backend pair without running any actual compilation or noisy simulation.
+## Training
 
-## Feature Engineering
+- Random forest: 100 trees, seed 42.
+- Target: Hellinger fidelity × 10.
+- Split: 70% training, 30% test, stratified by the best measured backend.
+- Circuits whose best-backend class occurs once are assigned to training.
+- Feature selection: a separate 80-tree forest fitted on training data; retain
+  importance above 0.005.
+- StandardScaler and the final forest are fitted in a pipeline on training data.
 
-### Circuit Features (23 dimensions)
+The split groups rows by circuit name. It does not hold out entire algorithm
+families or equivalent circuits represented at different compilation stages.
+Reported accuracy describes this split, not transfer to unseen hardware.
 
-**15 base features:**
-- `width` — number of qubits
-- `depth` — circuit depth
-- `total_gates`, `single_qubit_gates`, `two_qubit_gates`, `measure_gates`
-- `entanglement_ratio` = two_qubit_gates / total_gates
-- `program_communication` — average connectivity per qubit
-- `parallelism` — proportion of gates that can execute in parallel
-- `critical_depth` — two-qubit gate critical path density
-- `liveness` — fraction of qubits actively used
-- Per-gate counts: `h_gates`, `x_gates`, `cx_gates`, `rz_gates`
+## Features
 
-**8 advanced features:**
-- `gate_density` — gates per (qubit × depth)
-- `gate_diversity` — unique gate types normalized
-- `non_clifford_ratio` — Rz gate fraction
-- `coupling_density_circuit` — edge utilization vs complete graph
-- `twoq_nonmeasure_ratio` — two-qubit fraction among non-measurement gates
-- `parallel_capacity` — max width of any DAG layer normalized
-- `aspect_ratio` — log depth/width ratio
-- `entanglement_strength` — (CX + SWAP) / total_gates
+`src/features.py` supplies all training and inference features:
 
-### Backend Features (20 dimensions)
+| Group | Count | Content |
+|---|---:|---|
+| Circuit | 23 | Width, depth, gate counts, interaction graph, and derived ratios |
+| Backend | 20 | Qubit count, connectivity, error statistics, T1/T2 statistics |
+| Interaction | 13 | Error accumulation, size, connectivity, and coherence proxies |
 
-- `backend_num_qubits`, `num_edges`, `connectivity_density`, `avg_degree`
-- Single-qubit error statistics: `s1_error_mean`, `s1_error_std`, `s1_error_max`, `s1_error_min`
-- Two-qubit error statistics: `cnot_error_mean`, `cnot_error_std`, `cnot_error_max`, `cnot_error_min`
-- Readout error statistics: `ro_error_mean`, `ro_error_std`, `ro_error_max`, `ro_error_min`
-- Coherence times: `t1_mean`, `t1_std`, `t2_mean`, `t2_std`
+Several names are retained from the original model. `critical_depth` is the
+total two-qubit operation count divided by circuit depth; it is not a longest-path
+calculation. `non_clifford_ratio` counts Rz operations without inspecting angles.
+`single_qubit_gates` includes one-qubit instructions such as measurements.
+`coupling_match_ratio` compares qubit indices directly before hardware layout.
+T1/T2 risk assumes 100 ns per depth layer. These are model features, not compiled
+execution estimates.
 
-### Interaction Features (13 dimensions)
+## Ranking
 
-- Cumulative error terms: `cum_cnot_error`, `cum_s1_error`, `cum_ro_error`
-- `depth_weighted_error`, `cnot_sensitivity`, `size_mismatch`
-- `coupling_match_ratio` — fraction of circuit edges supported by backend topology
-- `parallel_connect_need`, `comm_degree`, `qubit_utilization`
-- `t1_risk`, `t2_risk`, `noise_budget`
+Backends with fewer qubits than the input circuit are excluded. Remaining
+backends are sorted by predicted FOM. Equal scores are ordered by backend name.
+Capacity filtering alone does not establish hardware executability.
 
-## Model Training
+Algorithm preferences are optional and require `--algorithm`. The adjustment is
+`0.2 × (algorithm/backend mean training FOM − global mean training FOM)`.
+Adjusted scores can fall outside the physical fidelity range. Training and
+inference use the same feature and ranking functions.
 
-The model is trained via `src/train.py` with:
+The supplied backend profiles are calibration snapshots. Recommendations do
+not query current devices or run the input circuit.
 
-- **Algorithm**: Random Forest (n_estimators=100)
-- **Feature selection**: importance threshold of 0.005
-- **Stratified split**: 70/30 train/test stratified by best backend
-- **Propensity weighting**: 0.20 weight for algorithm-level backend preferences
-- **Output**: `results/trained_model_optimized.pkl` (model, scaler, feature list, backend cache)
+## Data generation
 
-## Prediction
+Noisy simulation compiles against the selected fake backend target. Aer uses
+that backend's noise model and connectivity. Compilation and sampling seeds are
+fixed by `--seed`. Failed or empty noise models produce errors rather than
+ideal-simulation labels. `--backend ideal` selects ideal simulation explicitly.
 
-The `src/recommend.py` script reloads the trained artifacts and, for each input QASM circuit:
-
-1. Extracts the 23 circuit features
-2. For each backend, builds the 20 backend features + 13 interaction features
-3. Selects the 32 most important features (post-threshold)
-4. Scales using the trained StandardScaler
-5. Predicts FOM via the Random Forest model
-6. Ranks backends by predicted FOM descending
+The bundled labels come from the upstream dataset and have not been regenerated
+with the corrected generator. Provenance is recorded in `data/provenance.json`.
