@@ -6,3 +6,4 @@
 *.csv text eol=lf
 *.yml text eol=lf
 *.bib text eol=lf
+*.gz binary

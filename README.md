@@ -63,12 +63,14 @@ inputs. A run with failed inputs returns a nonzero exit code.
 ```bash
 python src/predict.py
 python src/evaluate.py
+python src/verify_fidelity.py
 ```
 
 These commands evaluate the held-out circuits and compare recommendations with
 three baselines: lowest readout, single-qubit, and two-qubit error. Each baseline
 is selected from backends with enough qubits for the circuit. Example outputs are
 in [`results/example_results/`](results/example_results/).
+`verify_fidelity.py` recomputes the dataset labels from the archived measurement counts.
 
 ## Generate data
 
@@ -94,8 +96,10 @@ python -m sphinx -W -b html docs docs/_build/html
 - [`data/QASM/`](data/QASM/): 578 circuits.
 - [`data/backend_json/`](data/backend_json/): 20 backend snapshots.
 - [`data/MQTBench_578_analysis_results.csv`](data/MQTBench_578_analysis_results.csv):
-  11,560 circuit/backend measurements. Raw count columns are archived; see
-  [`data/README.md`](data/README.md) and [`data/provenance.json`](data/provenance.json).
+  11,560 circuit/backend measurements used for training.
+- [`data/MQTBench_578_analysis_results_full.csv.gz`](data/MQTBench_578_analysis_results_full.csv.gz):
+  full measurements with ideal and noisy counts for recomputing fidelity.
+  See [`data/README.md`](data/README.md) and [`data/provenance.json`](data/provenance.json).
 - [`docs/`](docs/): installation, model details, and contribution notes.
 
 Based on [mobaize/Q-selector](https://github.com/mobaize/Q-selector).

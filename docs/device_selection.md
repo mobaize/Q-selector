@@ -55,3 +55,6 @@ ideal-simulation labels. `--backend ideal` selects ideal simulation explicitly.
 
 The bundled labels come from the upstream dataset and have not been regenerated
 with the corrected generator. Provenance is recorded in `data/provenance.json`.
+The compressed full dataset retains ideal and noisy measurement counts.
+`python src/verify_fidelity.py` recomputes the labels from those counts. Training
+uses the resulting scalar labels; it does not learn the full output distributions.
