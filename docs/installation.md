@@ -34,5 +34,4 @@ Optional dependency groups:
 | Data generation | `python -m pip install -e ".[data]"` |
 | Documentation | `python -m pip install -e ".[docs]"` |
 
-Model files are not included. Train locally before the first recommendation.
-Generated models and run outputs are ignored by Git.
+No pretrained model is included. Generated files under `results/` are ignored by Git.

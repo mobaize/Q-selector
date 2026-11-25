@@ -17,9 +17,8 @@ q-selector data/QASM/ --top 3
 q-selector circuit.qasm --algorithm ae
 ```
 
-Directories are searched recursively. The default ranking uses circuit and
-backend features. `--algorithm` adds a preference learned from the training set
-for the named algorithm. Renaming a file does not change the default ranking.
+Directories are searched recursively. `--algorithm` adds a preference learned
+from the training set; default rankings are independent of the filename.
 
 | Option | Purpose |
 |---|---|

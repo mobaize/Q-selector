@@ -35,13 +35,13 @@ q-selector data/QASM/ae_indep_qiskit_10.qasm --no-save
 q-selector data/QASM/ --top 3
 ```
 
-Training writes `results/trained_model_optimized.pkl` and `training_metadata.json`.
-Model files are not included in the repository; run training before the first recommendation.
-Recommendation ranks backends with enough qubits for the input circuit. FOM is
-Hellinger fidelity multiplied by 10; higher scores rank first. Scores are
-predictions for the bundled calibration snapshots, not live hardware measurements.
+Run training first to create `results/trained_model_optimized.pkl` and
+`training_metadata.json`. No pretrained model is included.
 
-Algorithm preferences are off by default. To apply a training-set preference:
+Backends with enough qubits are ranked by predicted FOM (Hellinger fidelity × 10).
+Predictions use the bundled calibration snapshots.
+
+Enable algorithm preferences with `--algorithm` (off by default):
 
 ```bash
 q-selector circuit.qasm --algorithm ae
@@ -67,11 +67,12 @@ python src/evaluate.py
 python src/verify_fidelity.py
 ```
 
-These commands evaluate the held-out circuits and compare recommendations with
-three baselines: lowest readout, single-qubit, and two-qubit error. Each baseline
-is selected from backends with enough qubits for the circuit. Example outputs are
-in [`results/example_results/`](results/example_results/).
-`verify_fidelity.py` recomputes the dataset labels from the archived measurement counts.
+- `predict.py`: rank backends for held-out circuits.
+- `evaluate.py`: compare with lowest readout, single-qubit, and two-qubit error
+  baselines, subject to qubit capacity.
+- `verify_fidelity.py`: recompute labels from the full measurement counts.
+
+Example outputs: [`results/example_results/`](results/example_results/).
 
 ## Generate data
 
@@ -104,7 +105,5 @@ python -m sphinx -W -b html docs docs/_build/html
 - [`docs/`](docs/): installation, model details, and contribution notes.
 
 Maintained alongside [QCFlow/qcflow-q-selector](https://github.com/QCFlow/qcflow-q-selector).
-Original attribution is retained in [`LICENSE.md`](LICENSE.md) and [`CITATION.bib`](CITATION.bib).
-Models are generated locally; only load pickle files from a trusted source.
-
-MIT License.
+License: [MIT](LICENSE.md). Citations: [`CITATION.bib`](CITATION.bib).
+Only load trusted pickle files.

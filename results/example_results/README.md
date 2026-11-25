@@ -23,5 +23,4 @@ has too few qubits. Dataset checksum and dependency versions are in
 | `baseline_comparison_optimized.csv` | Comparisons with feasible low-error baselines |
 | `baseline_analysis_optimized.json` | The same comparisons in JSON |
 
-These results use the upstream measurement labels. The full dataset has not
-been regenerated with the corrected simulator.
+Measurements predate the data-generator fixes.
