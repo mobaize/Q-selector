@@ -1,5 +1,9 @@
 # Q-Selector
 
+<p align="center">
+  <img src="fig/Q-selector.png" alt="Q-Selector logo" width="560">
+</p>
+
 [![Checks](https://github.com/mobaize/Q-selector/actions/workflows/checks.yml/badge.svg)](https://github.com/mobaize/Q-selector/actions/workflows/checks.yml)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](pyproject.toml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
