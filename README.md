@@ -28,11 +28,9 @@ processors you want to study.
 
 ## Features
 
-- Rank backends by predicted Hellinger fidelity, excluding those with too few qubits.
+- Rank backends by the predicted target metric, excluding those with too few qubits.
 - Process individual QASM files or directories and export rankings as CSV and JSON.
 - Train on your own measurement datasets and compare with error-rate baselines.
-- Recompute fidelity labels from the included ideal and noisy measurement counts.
-- Generate measurements with Qiskit Aer and fake backend noise models.
 
 ## Quickstart
 
@@ -65,11 +63,6 @@ python src/train.py
 q-selector data/QASM/ae_indep_qiskit_10.qasm --no-save
 ```
 
-Run training first to create `results/trained_model_optimized.pkl` and
-`training_metadata.json`. No pretrained model is included.
-
-Scores are reported as FOM: predicted Hellinger fidelity × 10.
-
 ## Usage
 
 Rank all circuits in a directory:
@@ -91,8 +84,6 @@ q-selector circuit.qasm --model path/to/model.pkl --output results/your_work
 q-selector circuit.qasm --backend-json data/backend_json
 q-selector --help
 ```
-
-Only load trusted pickle files with `--model`.
 
 Each saved run contains `best_recommendation.csv`, `full_ranking.csv`, and
 `full_ranking.json` under `results/your_work/<timestamp>/`. The JSON records failed
@@ -140,17 +131,3 @@ python -m pytest
 python -m ruff check src tests docs/conf.py
 python -m sphinx -W -b html docs docs/_build/html
 ```
-
-## Example data and source
-
-- [`data/QASM/`](data/QASM/): 578 circuits.
-- [`data/backend_json/`](data/backend_json/): 20 backend snapshots.
-- [`data/MQTBench_578_analysis_results.csv`](data/MQTBench_578_analysis_results.csv):
-  11,560 circuit/backend measurements used for training.
-- [`data/MQTBench_578_analysis_results_full.csv.gz`](data/MQTBench_578_analysis_results_full.csv.gz):
-  full measurements with ideal and noisy counts for recomputing fidelity.
-  See [`data/README.md`](data/README.md) and [`data/provenance.json`](data/provenance.json).
-- [`docs/`](docs/): installation, model details, and contribution notes.
-
-Maintained alongside [QCFlow/qcflow-q-selector](https://github.com/QCFlow/qcflow-q-selector).
-License: [MIT](LICENSE.md). Citations: [`CITATION.bib`](CITATION.bib).
