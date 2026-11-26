@@ -1,7 +1,7 @@
 # Q-Selector
 
 <p align="center">
-  <img src="fig/Q-selector.png" alt="Q-Selector logo" width="560">
+  <img src="fig/Q-selector-readme.png" alt="Q-Selector logo" width="440">
 </p>
 
 [![Checks](https://github.com/mobaize/Q-selector/actions/workflows/checks.yml/badge.svg)](https://github.com/mobaize/Q-selector/actions/workflows/checks.yml)
@@ -13,8 +13,8 @@ well different processors suit a given circuit. Given an OpenQASM 2 circuit, it
 combines circuit structure with backend connectivity and calibration features to
 predict measurement fidelity and rank candidate processors.
 
-The bundled dataset is a small example. You can generate your own datasets and
-train models for the circuits and processors you want to study.
+You can generate your own datasets and train models for the circuits and
+processors you want to study.
 
 [Quickstart](#quickstart) · [Usage guide](docs/quickstart.md) ·
 [Model and features](docs/device_selection.md) · [Dataset](data/README.md)
