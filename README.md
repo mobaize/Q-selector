@@ -1,12 +1,22 @@
-# Q-Selector
-
 <p align="center">
-  <img src="fig/Q-selector-readme.png" alt="Q-Selector logo" width="440">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="fig/q-selector-dark.svg">
+    <img src="fig/q-selector-light.svg" alt="Q-Selector" width="420">
+  </picture>
 </p>
 
-[![Checks](https://github.com/mobaize/Q-selector/actions/workflows/checks.yml/badge.svg)](https://github.com/mobaize/Q-selector/actions/workflows/checks.yml)
-[![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](pyproject.toml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
+<p align="center">
+  <a href="https://github.com/mobaize/Q-selector/actions/workflows/checks.yml"><img src="https://github.com/mobaize/Q-selector/actions/workflows/checks.yml/badge.svg" alt="Checks"></a>
+  <a href="pyproject.toml"><img src="https://img.shields.io/badge/Python-3.10%2B-3776ab" alt="Python 3.10+"></a>
+  <a href="LICENSE.md"><img src="https://img.shields.io/badge/License-MIT-64748b" alt="MIT License"></a>
+</p>
+
+<p align="center">
+  <a href="#quickstart">Quickstart</a> &middot;
+  <a href="docs/quickstart.md">Usage guide</a> &middot;
+  <a href="docs/device_selection.md">Model and features</a> &middot;
+  <a href="data/README.md">Dataset</a>
+</p>
 
 Q-Selector is a Python tool for choosing quantum processors and exploring how
 well different processors suit a given circuit. Given an OpenQASM 2 circuit, it
@@ -15,9 +25,6 @@ predict measurement fidelity and rank candidate processors.
 
 You can generate your own datasets and train models for the circuits and
 processors you want to study.
-
-[Quickstart](#quickstart) · [Usage guide](docs/quickstart.md) ·
-[Model and features](docs/device_selection.md) · [Dataset](data/README.md)
 
 ## Features
 
