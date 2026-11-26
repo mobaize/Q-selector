@@ -1,4 +1,4 @@
-# Dataset
+# Example dataset
 
 Both datasets contain 11,560 rows: 578 circuits × 20 backends.
 

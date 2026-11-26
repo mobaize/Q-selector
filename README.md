@@ -4,15 +4,13 @@
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue)](pyproject.toml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE.md)
 
-Q-Selector is a Python tool for quantum backend selection. Given an OpenQASM 2
-circuit, it combines circuit structure with backend connectivity and calibration
-features to predict measurement fidelity and rank candidate backends.
+Q-Selector is a Python tool for choosing quantum processors and exploring how
+well different processors suit a given circuit. Given an OpenQASM 2 circuit, it
+combines circuit structure with backend connectivity and calibration features to
+predict measurement fidelity and rank candidate processors.
 
-The random forest model provides a shortlist of backends before running further
-simulations or hardware experiments. The repository includes 578 benchmark
-circuits, 20 simulated backend profiles, and 11,560 circuit/backend measurements
-for local training and evaluation. Recommendations use the supplied calibration
-snapshots.
+The bundled dataset is a small example. You can generate your own datasets and
+train models for the circuits and processors you want to study.
 
 [Quickstart](#quickstart) · [Usage guide](docs/quickstart.md) ·
 [Model and features](docs/device_selection.md) · [Dataset](data/README.md)
@@ -21,7 +19,7 @@ snapshots.
 
 - Rank backends by predicted Hellinger fidelity, excluding those with too few qubits.
 - Process individual QASM files or directories and export rankings as CSV and JSON.
-- Train locally and compare recommendations with error-rate baselines.
+- Train on your own measurement datasets and compare with error-rate baselines.
 - Recompute fidelity labels from the included ideal and noisy measurement counts.
 - Generate measurements with Qiskit Aer and fake backend noise models.
 
@@ -114,6 +112,15 @@ python src/data_generator.py path/to/qasm --backend FakeYorktownV2 --shots 2000 
 Repeat `--backend` for additional profiles. Results go to `results/generated/`.
 Failed noise-model construction or simulation produces no labeled row.
 
+Train on your own measurements, circuits, and backend profiles:
+
+```bash
+python src/train.py --data path/to/measurements.csv --qasm path/to/qasm --backend-json path/to/backend_json --output results/custom
+q-selector circuit.qasm --model results/custom/trained_model_optimized.pkl
+```
+
+CSV fields and count formats are described in [`data/README.md`](data/README.md).
+
 ## Development
 
 ```bash
@@ -123,7 +130,7 @@ python -m ruff check src tests docs/conf.py
 python -m sphinx -W -b html docs docs/_build/html
 ```
 
-## Data and source
+## Example data and source
 
 - [`data/QASM/`](data/QASM/): 578 circuits.
 - [`data/backend_json/`](data/backend_json/): 20 backend snapshots.
